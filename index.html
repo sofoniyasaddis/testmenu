@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Halal Food Corner - Premium Ordering System</title>
+  <!-- Tailwind CSS for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-stone-950 text-stone-100 font-sans antialiased selection:bg-emerald-500 selection:text-white">
+
+  <!-- BACKGROUND DECORATIVE PATTERN MAP (Islamic Geometric Accent) -->
+  <div class="absolute inset-0 opacity-[0.02] pointer-events-none bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:16px_16px] z-0"></div>
+
+  <!-- HERO HEADER LAYER -->
+  <header class="relative bg-stone-900/80 border-b border-stone-800 py-16 px-6 text-center z-10 overflow-hidden">
+    <!-- Star & Crescent Islamic Ornament Accents -->
+    <div class="absolute -top-10 -left-10 w-40 h-40 rounded-full border border-amber-500/10 flex items-center justify-center text-amber-500/10 text-6xl">🌙</div>
+    <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full border border-amber-500/10 flex items-center justify-center text-amber-500/10 text-6xl">🕌</div>
+
+    <div class="max-w-3xl mx-auto relative">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-4">
+        <span>🕌</span> 100% Certified Halal <span>✦</span> Authentic Taste
+      </div>
+      <h1 class="text-4xl md:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-500 font-serif">
+        HALAL FOOD CORNER
+      </h1>
+      <div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto my-4"></div>
+      <p class="text-stone-400 text-sm md:text-base max-w-md mx-auto leading-relaxed">
+        Bismillah. Experience exceptional culinary tradition curated with premium ingredients.
+      </p>
+    </div>
+
+    <!-- Floating Access Toggle Action -->
+    <button id="adminStatusBtn" onclick="scrollToAdmin()" class="absolute top-4 right-4 flex items-center gap-2 text-[11px] px-3 py-1.5 rounded-lg border border-stone-800 bg-stone-950 text-stone-400 hover:text-white transition-all shadow-lg">
+      <span class="w-1.5 h-1.5 rounded-full bg-stone-600 block" id="statusDot"></span>
+      <span id="statusText">Staff Dashboard</span>
+    </button>
+  </header>
+
+  <!-- LIVE RECEIPT TICKETS ROW (Dynamic Verification Board for Customer) -->
+  <div id="customerTicketsSection" class="max-w-5xl mx-auto px-4 mt-6 hidden">
+    <div class="bg-amber-500/5 border border-amber-500/20 p-4 rounded-xl flex flex-col gap-3">
+      <div class="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
+        <span>🎟️</span> Your Active Verification Tickets
+      </div>
+      <div id="customerTicketsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <!-- Live tracking cards populate here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN WINDOW MAIN LAYOUT -->
+  <main class="max-w-5xl mx-auto px-4 py-12 relative z-10">
+    
+    <!-- CATEGORY FILTER TABS -->
+    <div class="flex flex-wrap justify-center gap-2 mb-12 pb-6 border-b border-stone-900" id="tabsContainer">
+      <!-- Generated Dynamically -->
+    </div>
+
+    <!-- PRODUCT DISPLAY GRID -->
+    <div id="menuContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Generated Dynamically -->
+    </div>
+
+  </main>
+
+  <!-- ADMIN SECURITY DESK & INCOMING ORDERS TERMINAL -->
+  <footer id="adminSection" class="bg-stone-900/50 border-t border-stone-900 py-16 px-6 mt-24 relative z-10">
+    <div class="max-w-4xl mx-auto">
+      
+      <!-- Password Protection Core Panel -->
+      <div id="adminLoginForm" class="bg-stone-950 border border-stone-800 p-6 rounded-2xl shadow-2xl max-w-md mx-auto text-center">
+        <div class="inline-block p-2 bg-stone-900 rounded-full text-amber-500 mb-3">🔒</div>
+        <h4 class="text-sm font-bold uppercase tracking-wider text-stone-300 mb-4">Secure Terminal Operations</h4>
+        <div class="flex gap-2">
+          <input 
+            type="password" 
+            id="passcodeInput"
+            placeholder="Enter Staff Passcode" 
+            class="w-full bg-stone-900 border border-stone-800 text-sm rounded-lg px-3 py-2 text-stone-200 placeholder-stone-600 font-mono focus:outline-none focus:border-stone-700 transition-colors"
+          />
+          <button 
+            onclick="attemptLogin()"
+            class="bg-amber-400 text-stone-950 font-bold text-xs uppercase px-5 rounded-lg tracking-wider hover:bg-amber-300 transition-all"
+          >
+            Unlock
+          </button>
+        </div>
+        <p id="loginError" class="text-[11px] text-red-400 font-mono mt-2 hidden">✕ Access Refused: Invalid Credentials</p>
+      </div>
+
+      <!-- FULLY EXTENDED STAFF SYSTEM MANAGEMENT CONSOLE -->
+      <div id="adminControls" class="hidden space-y-8">
+        
+        <!-- Live Order Queue Notification Center -->
+        <div class="bg-stone-950 border border-stone-800 p-6 rounded-2xl shadow-xl">
+          <div class="flex items-center justify-between border-b border-stone-800 pb-4 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+              <h3 class="text-base font-bold text-emerald-400 uppercase tracking-wider">Live Incoming Order Queue</h3>
+            </div>
+            <button onclick="logoutAdmin()" class="text-xs bg-stone-900 border border-stone-800 text-stone-400 px-3 py-1 rounded hover:text-white transition-colors">
+              Lock Console
+            </button>
+          </div>
+          
+          <div id="staffOrdersQueue" class="space-y-3">
+            <p class="text-xs text-stone-500 text-center py-6 font-mono">Waiting for customer checkouts...</p>
+          </div>
+        </div>
+
+        <div class="bg-emerald-950/10 border border-emerald-500/10 p-4 rounded-xl text-center text-xs text-stone-400">
+          💡 Price config controllers are now also unlocked directly inside the menu viewports above.
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- SCRIPT ARCHITECTURE -->
+  <script>
+    // --- COMPREHENSIVE HALAL RESTAURANT RECORD COLLECTION ---
+    const DEFAULT_MENU = [
+      { id: 1, name: "Chicken Shawarma Wrap", category: "Wraps", price: 9.50, desc: "Slow-roasted chicken, garlic sauce, and pickles in fresh flatbread.", img: "https://images.unsplash.com/photo-1561651823-34fed022540e?auto=format&fit=crop&w=600&q=80" },
+      { id: 2, name: "Premium Lamb Gyro", category: "Wraps", price: 10.99, desc: "Tender seasoned lamb wrapped with tomatoes, onions, and tzatziki.", img: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=80" },
+      { id: 3, name: "Mixed Grill Rice Platter", category: "Platters", price: 18.50, desc: "Skewers of chicken tikka and beef kofta served over spiced basmati rice.", img: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=600&q=80" },
+      { id: 4, name: "Falafel & Hummus Plate", category: "Platters", price: 12.00, desc: "Crispy house falafels served alongside velvet-smooth chickpea dip and hot pita.", img: "https://images.unsplash.com/photo-1547058886-af77992d478c?auto=format&fit=crop&w=600&q=80" },
+      { id: 5, name: "Halal Beef Smash Burger", category: "Burgers", price: 11.50, desc: "Double crisp-crust beef patties, double real cheddar cheese, and custom house sauce.", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" },
+      { id: 6, name: "Fresh Mango Lassi", category: "Drinks", price: 4.00, desc: "Creamy traditional mango yogurt smoothly churned with rich cardamom accents.", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=600&q=80" }
+    ];
+
+    const CORRECT_PASSCODE = "3002";
+    
+    // Core Engine States
+    let menuItems = JSON.parse(localStorage.getItem('halal_corner_menu_v2')) || DEFAULT_MENU;
+    let orderQueue = JSON.parse(localStorage.getItem('halal_order_queue')) || [];
+    let isAdmin = false;
+    let currentCategory = "All";
+
+    const categories = ["All", ...new Set(DEFAULT_MENU.map(item => item.category))];
+
+    // --- MAIN DESIGN RENDER ENGINES ---
+    function renderTabs() {
+      const container = document.getElementById('tabsContainer');
+      container.innerHTML = '';
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.innerText = cat;
+        btn.className = `px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all ${
+          currentCategory === cat ? 'bg-amber-400 text-stone-950 shadow-lg' : 'bg-stone-900 text-stone-400 hover:bg-stone-800'
+        }`;
+        btn.onclick = () => { currentCategory = cat; renderTabs(); renderMenu(); };
+        container.appendChild(btn);
+      });
+    }
+
+    function renderMenu() {
+      const container = document.getElementById('menuContainer');
+      container.innerHTML = '';
+
+      const filtered = currentCategory === "All" ? menuItems : menuItems.filter(i => i.category === currentCategory);
+
+      filtered.forEach(item => {
+        const card = `
+          <div class="group bg-stone-900/40 border border-stone-900 hover:border-stone-800 rounded-2xl overflow-hidden flex flex-col justify-between transition-all duration-300">
+            <div>
+              <!-- Food Banner Frame -->
+              <div class="h-44 w-full bg-stone-800 overflow-hidden relative">
+                <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 loading="lazy"">
+                <span class="absolute top-3 left-3 bg-stone-950/80 backdrop-blur-md text-[10px] text-amber-400 uppercase tracking-widest px-2.5 py-1 rounded-md font-bold border border-amber-500/20">
+                  ${item.category}
+                </span>
+              </div>
+              
+              <div class="p-5">
+                <div class="flex justify-between items-start gap-2">
+                  <h3 class="font-bold text-lg text-stone-100 group-hover:text-amber-400 transition-colors">${item.name}</h3>
+                  <span class="font-mono font-bold text-emerald-400 text-lg">$${item.price.toFixed(2)}</span>
+                </div>
+                <p class="text-xs text-stone-400 mt-2 leading-relaxed">${item.desc}</p>
+              </div>
+            </div>
+
+            <div class="px-5 pb-5 pt-2">
+              <button 
+                onclick="promptOrder(${item.id}, '${item.name}', ${item.price})"
+                class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs uppercase py-2.5 rounded-xl transition-all shadow-md tracking-wider flex items-center justify-center gap-2"
+              >
+                <span>🛒</span> Order Now
+              </button>
+
+              <!-- Admin Controls Interface Wrapper -->
+              ${isAdmin ? `
+                <div class="mt-4 pt-3 border-t border-stone-800 flex items-center justify-between bg-stone-950 p-2 rounded-xl border border-stone-800">
+                  <span class="text-[10px] text-stone-500 font-mono font-bold">Price Override:</span>
+                  <div class="flex items-center gap-1">
+                    <input type="number" step="0.01" value="${item.price}" id="inputPrice-${item.id}" class="w-14 bg-stone-900 border border-stone-800 text-xs text-center font-mono rounded p-1 text-amber-400 focus:outline-none"/>
+                    <button onclick="updatePrice(${item.id})" class="bg-amber-400 text-stone-950 px-2 py-1 rounded text-[10px] font-bold">Set</button>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+        container.innerHTML += card;
+      });
+    }
+
+    // --- ORDER DISPATCH LOGIC ---
+    function promptOrder(id, name, price) {
+      const quantityStr = prompt(`How many servings of "${name}" would you like to request?`, "1");
+      if (quantityStr === null) return; // User cancelled
+      
+      const qty = parseInt(quantityStr, 10);
+      if (isNaN(qty) || qty <= 0) {
+        alert("🚨 Please enter a valid quantity amount.");
+        return;
+      }
+
+      // Generate verification code number format: HFC-XXXX
+      const ticketNumber = Math.floor(1000 + Math.random() * 9000);
+      const totalPrice = price * qty;
+
+      const orderItem = {
+        id: Date.now(),
+        ticket: ticketNumber,
+        itemName: name,
+        qty: qty,
+        total: totalPrice,
+        status: "Pending Verification"
+      };
+
+      orderQueue.push(orderItem);
+      localStorage.setItem('halal_order_queue', JSON.stringify(orderQueue));
+
+      alert(`🎉 Order Dispatched!\n\nYour Verification Ticket: HFC-${ticketNumber}\nTotal: $${totalPrice.toFixed(2)}\n\nPlease match this ticket number with our server staff to collect your food.`);
+
+      renderCustomerTickets();
+      renderStaffQueue();
+    }
+
+    // --- CUSTOMER TRACKING CARD GRID ---
+    function renderCustomerTickets() {
+      const sec = document.getElementById('customerTicketsSection');
+      const box = document.getElementById('customerTicketsContainer');
+      box.innerHTML = '';
+
+      if (orderQueue.length === 0) {
+        sec.classList.add('hidden');
+        return;
+      }
+      sec.classList.remove('hidden');
+
+      orderQueue.forEach(order => {
+        const statusColor = order.status === "Verified & Preparing" ? "text-emerald-400 border-emerald-500/20 bg-emerald-500/5" : "text-amber-400 border-amber-500/20 bg-amber-500/5";
+        box.innerHTML += `
+          <div class="p-3 bg-stone-900 border rounded-lg flex flex-col justify-between ${order.status === 'Verified & Preparing' ? 'border-emerald-500/30' : 'border-stone-800'}">
+            <div class="flex justify-between items-center">
+              <span class="font-mono text-xs font-black bg-stone-950 px-2 py-0.5 rounded text-stone-300">HFC-${order.ticket}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${statusColor}">${order.status}</span>
+            </div>
+            <div class="mt-2 text-xs">
+              <span class="font-bold text-stone-200">${order.qty}x</span> ${order.itemName}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // --- STAFF CONSOLE LIVE ACTIONS GRID ---
+    function renderStaffQueue() {
+      const container = document.getElementById('staffOrdersQueue');
+      container.innerHTML = '';
+
+      if (orderQueue.length === 0) {
+        container.innerHTML = `<p class="text-xs text-stone-500 text-center py-6 font-mono">Waiting for customer checkouts...</p>`;
+        return;
+      }
+
+      orderQueue.forEach(order => {
+        container.innerHTML += `
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center p-4 bg-stone-900 border border-stone-800 rounded-xl gap-4 font-mono text-xs">
+            <div class="flex flex-wrap items-center gap-4">
+              <div class="bg-amber-400/10 border border-amber-400/20 px-3 py-1.5 rounded-lg text-center">
+                <p class="text-[9px] text-stone-500 uppercase">Ticket ID</p>
+                <p class="text-sm font-bold text-amber-400">HFC-${order.ticket}</p>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-stone-100">${order.qty}x ${order.itemName}</p>
+                <p class="text-[11px] text-stone-400 mt-0.5">Value payload: $${order.total.toFixed(2)}</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-2 self-end sm:self-auto">
+              <span class="text-[10px] uppercase font-bold px-2 py-1 rounded ${order.status === 'Verified & Preparing' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">
+                ${order.status}
+              </span>
+              ${order.status === 'Pending Verification' ? `
+                <button onclick="verifyOrder(${order.id})" class="bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-bold px-3 py-1.5 rounded text-[11px] transition-colors">
+                  Verify & Approve
+                </button>
+              ` : ''}
+              <button onclick="deleteOrder(${order.id})" class="bg-stone-950 hover:bg-red-950/40 border border-stone-800 text-stone-500 hover:text-red-400 p-1.5 rounded transition-colors" title="Dismiss Ticket">✕</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // --- ACCESS CONTROLLERS ---
+    function attemptLogin() {
+      if (document.getElementById('passcodeInput').value === CORRECT_PASSCODE) {
+        isAdmin = true;
+        document.getElementById('adminLoginForm').classList.add('hidden');
+        document.getElementById('adminControls').classList.remove('hidden');
+        document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-emerald-400 block animate-pulse";
+        document.getElementById('statusText').innerText = "Console Active";
+        renderMenu();
+        renderStaffQueue();
+      } else {
+        document.getElementById('loginError').classList.remove('hidden');
+      }
+    }
+
+    function logoutAdmin() {
+      isAdmin = false;
+      document.getElementById('passcodeInput').value = '';
+      document.getElementById('adminLoginForm').classList.remove('hidden');
+      document.getElementById('adminControls').classList.add('hidden');
+      document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-stone-600 block";
+      document.getElementById('statusText').innerText = "Staff Dashboard";
+      renderMenu();
+    }
+
+    function verifyOrder(id) {
+      orderQueue = orderQueue.map(o => o.id === id ? { ...o, status: "Verified & Preparing" } : o);
+      localStorage.setItem('halal_order_queue', JSON.stringify(orderQueue));
+      renderCustomerTickets();
+      renderStaffQueue();
+    }
+
+    function deleteOrder(id) {
+      orderQueue = orderQueue.filter(o => o.id !== id);
+      localStorage.setItem('halal_order_queue', JSON.stringify(orderQueue));
+      renderCustomerTickets();
+      renderStaffQueue();
+    }
+
+    function updatePrice(id) {
+      const val = parseFloat(document.getElementById(`inputPrice-${id}`).value);
+      if (!isNaN(val) && val >= 0) {
+        menuItems = menuItems.map(i => i.id === id ? { ...i, price: val } : i);
+        localStorage.setItem('halal_corner_menu_v2', JSON.stringify(menuItems));
+        renderMenu();
+      }
+    }
+
+    function scrollToAdmin() {
+      document.getElementById('adminSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Initial Launch sequence
+    renderTabs();
+    renderMenu();
+    renderCustomerTickets();
+  </script>
+</body>
+</html>
