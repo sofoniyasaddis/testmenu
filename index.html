@@ -1,62 +1,69 @@
+### The Final Complete Code (`index.html`)
+
+You can copy this entire block, replace your old file completely, and test it out!
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Halal Food Corner - Secure Live Sync</title>
+  <title>Halal Food Corner - Live Firebase Sync</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- MQTT Library for live messaging across devices -->
-  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  
+  <!-- FIREBASE PLATFORM CORE & REALTIME DATABASE SCRIPTS -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 </head>
 <body class="min-h-screen bg-stone-950 text-stone-100 font-sans antialiased">
 
   <div class="absolute inset-0 opacity-[0.02] pointer-events-none bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:16px_16px] z-0"></div>
 
-  <!-- HERO HEADER -->
+  <!-- HERO HEADER LAYER -->
   <header class="relative bg-stone-900/80 border-b border-stone-800 py-16 px-6 text-center z-10 overflow-hidden">
     <div class="absolute -top-10 -left-10 w-40 h-40 rounded-full border border-amber-500/10 flex items-center justify-center text-amber-500/10 text-6xl">🌙</div>
     <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full border border-amber-500/10 flex items-center justify-center text-amber-500/10 text-6xl">🕌</div>
 
     <div class="max-w-3xl mx-auto relative">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-4">
-        <span>🕌</span> 100% Certified Halal <span>✦</span> HiveMQ Secure Sync
+        <span>🕌</span> 100% Certified Halal <span>✦</span> Live Firebase Cloud Sync
       </div>
       <h1 class="text-4xl md:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-500 font-serif">
         HALAL FOOD CORNER
       </h1>
       <div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto my-4"></div>
       <p class="text-stone-400 text-sm md:text-base max-w-md mx-auto leading-relaxed">
-        Bismillah. Placed orders sync instantly with our kitchen terminal over your private secure cloud.
+        Bismillah. Place your order on any device—our staff kitchen monitors will refresh instantly.
       </p>
     </div>
 
     <button id="adminStatusBtn" onclick="scrollToAdmin()" class="absolute top-4 right-4 flex items-center gap-2 text-[11px] px-3 py-1.5 rounded-lg border border-stone-800 bg-stone-950 text-stone-400 hover:text-white transition-all shadow-lg">
       <span class="w-1.5 h-1.5 rounded-full bg-red-500 block" id="statusDot"></span>
-      <span id="statusText">Connecting Sync...</span>
+      <span id="statusText">Connecting Firebase...</span>
     </button>
   </header>
 
-  <!-- ACTIVE VERIFICATION TICKETS FOR CUSTOMER -->
+  <!-- LIVE RECEIPT TICKETS ROW (Dynamic Verification Board for Customer) -->
   <div id="customerTicketsSection" class="max-w-5xl mx-auto px-4 mt-6 hidden">
     <div class="bg-amber-500/5 border border-amber-500/20 p-4 rounded-xl flex flex-col gap-3">
       <div class="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
-        <span>🎟️</span> Your Active Verification Tickets
+        <span>🎟️</span> Your Active Verification Tickets (Synced Live)
       </div>
       <div id="customerTicketsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
     </div>
   </div>
 
-  <!-- MAIN MENU LAYOUT -->
+  <!-- MAIN WINDOW MAIN LAYOUT -->
   <main class="max-w-5xl mx-auto px-4 py-12 relative z-10">
     <div class="flex flex-wrap justify-center gap-2 mb-12 pb-6 border-b border-stone-900" id="tabsContainer"></div>
     <div id="menuContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
   </main>
 
-  <!-- STAFF PANEL & ORDERS QUEUE -->
+  <!-- ADMIN SECURITY DESK & INCOMING ORDERS TERMINAL -->
   <footer id="adminSection" class="bg-stone-900/50 border-t border-stone-900 py-16 px-6 mt-24 relative z-10">
     <div class="max-w-4xl mx-auto">
       
-      <!-- Password Lock Screen -->
+      <!-- Password Protection Core Panel -->
       <div id="adminLoginForm" class="bg-stone-950 border border-stone-800 p-6 rounded-2xl shadow-2xl max-w-md mx-auto text-center">
         <div class="inline-block p-2 bg-stone-900 rounded-full text-amber-500 mb-3">🔒</div>
         <h4 class="text-sm font-bold uppercase tracking-wider text-stone-300 mb-4">Secure Terminal Operations</h4>
@@ -67,7 +74,7 @@
         <p id="loginError" class="text-[11px] text-red-400 font-mono mt-2 hidden">✕ Access Refused: Invalid Credentials</p>
       </div>
 
-      <!-- KITCHEN STAFF CONSOLE -->
+      <!-- FULLY EXTENDED STAFF SYSTEM MANAGEMENT CONSOLE -->
       <div id="adminControls" class="hidden space-y-8">
         <div class="bg-stone-950 border border-stone-800 p-6 rounded-2xl shadow-xl">
           <div class="flex items-center justify-between border-b border-stone-800 pb-4 mb-4">
@@ -85,17 +92,20 @@
   </footer>
 
   <script>
-    // --- LIVE SYNC CHANNEL DATA (YOUR SECURE CLUSTER) ---
-    const MQTT_TOPIC_ORDERS = "HFC_Live_Sync_983742/orders";
-    const MQTT_TOPIC_PRICES = "HFC_Live_Sync_983742/prices";
+    // --- YOUR LIVE APPLIED FIREBASE APP CONFIG ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyBjbm0b7EnAYcfV2BtwoFxtdkagdol52M8",
+      authDomain: "halal-food-corner-5961e.firebaseapp.com",
+      databaseURL: "https://halal-food-corner-5961e-default-rtdb.firebaseio.com", // Points directly to your Realtime Database link
+      projectId: "halal-food-corner-5961e",
+      storageBucket: "halal-food-corner-5961e.firebasestorage.app",
+      messagingSenderId: "251600357503",
+      appId: "1:251600357503:web:b13efb9a77179ed36b574a"
+    };
 
-    // Secure WebSocket connection pointing to your new HiveMQ Serverless link
-    const client = mqtt.connect("wss://2605cfd1a2be4b6fa4da51b840670b1b.s1.eu.hivemq.cloud:8884/mqtt", {
-      username: "YOUR_HIVEMQ_USERNAME", // 👈 Enter your HiveMQ credentials here
-      password: "YOUR_HIVEMQ_PASSWORD", // 👈 Enter your HiveMQ credentials here
-      keepalive: 60,
-      reconnectPeriod: 1000
-    });
+    // Initialize Firebase Engine Interface
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
     const DEFAULT_MENU = [
       { id: 1, name: "Chicken Shawarma Wrap", category: "Wraps", price: 9.50, desc: "Slow-roasted chicken, garlic sauce, and pickles in fresh flatbread.", img: "https://images.unsplash.com/photo-1561651823-34fed022540e?auto=format&fit=crop&w=600&q=80" },
@@ -107,56 +117,47 @@
     ];
 
     const CORRECT_PASSCODE = "3002";
-    let menuItems = JSON.parse(localStorage.getItem('mqtt_hfc_menu')) || DEFAULT_MENU;
-    let orderQueue = JSON.parse(localStorage.getItem('mqtt_hfc_queue')) || [];
-    let myLocalTickets = JSON.parse(localStorage.getItem('mqtt_hfc_local_tickets')) || [];
+    let menuItems = DEFAULT_MENU;
+    let orderQueue = [];
+    let myLocalTickets = JSON.parse(localStorage.getItem('my_placed_tickets')) || [];
     let isAdmin = false;
     let currentCategory = "All";
 
     const categories = ["All", ...new Set(DEFAULT_MENU.map(item => item.category))];
 
-    // --- CONFIGURE LIVE NETWORK EVENTS ---
-    client.on('connect', () => {
-      // Update header status badge to green on connection success
-      document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-emerald-500 block animate-pulse";
-      document.getElementById('statusText').innerText = isAdmin ? "Console Active" : "Staff Dashboard";
-
-      // Listen to your custom food corner data streams
-      client.subscribe([MQTT_TOPIC_ORDERS, MQTT_TOPIC_PRICES]);
-    });
-
-    client.on('error', (err) => {
-      console.error("Connection error: ", err);
-      document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-red-500 block";
-      document.getElementById('statusText').innerText = "Connection Error";
-    });
-
-    client.on('message', (topic, message) => {
-      const payload = JSON.parse(message.toString());
-
-      if (topic === MQTT_TOPIC_ORDERS) {
-        if (payload.action === "create") {
-          if (!orderQueue.some(o => o.id === payload.data.id)) {
-            orderQueue.push(payload.data);
-          }
-        } else if (payload.action === "verify") {
-          orderQueue = orderQueue.map(o => o.id === payload.id ? { ...o, status: "Verified & Preparing" } : o);
-        } else if (payload.action === "delete") {
-          orderQueue = orderQueue.filter(o => o.id !== payload.id);
-        }
-        localStorage.setItem('mqtt_hfc_queue', JSON.stringify(orderQueue));
-        renderCustomerTickets();
-        renderStaffQueue();
-      }
-
-      if (topic === MQTT_TOPIC_PRICES) {
-        menuItems = menuItems.map(item => item.id === payload.id ? { ...item, price: payload.price } : item);
-        localStorage.setItem('mqtt_hfc_menu', JSON.stringify(menuItems));
-        renderMenu();
+    // --- STREAM DATA IN REAL-TIME FROM FIREBASE ---
+    // Handle status confirmation badge inside header
+    db.ref('.info/connected').on('value', (snapshot) => {
+      if (snapshot.val() === true) {
+        document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-emerald-400 block animate-pulse";
+        document.getElementById('statusText').innerText = isAdmin ? "Console Active" : "Staff Dashboard";
+      } else {
+        document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-red-500 block";
+        document.getElementById('statusText').innerText = "Offline";
       }
     });
 
-    // --- HTML DESIGN LAYOUT GENERATORS ---
+    // Listen for live updates to the menu pricing structure across devices
+    db.ref('menu_prices').on('value', (snapshot) => {
+      const livePrices = snapshot.val();
+      if (livePrices) {
+        menuItems = DEFAULT_MENU.map(item => ({
+          ...item,
+          price: livePrices[item.id] !== undefined ? livePrices[item.id] : item.price
+        }));
+      }
+      renderMenu();
+    });
+
+    // Listen for live database ticket adjustments
+    db.ref('orders').on('value', (snapshot) => {
+      const data = snapshot.val();
+      orderQueue = data ? Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] })) : [];
+      renderCustomerTickets();
+      renderStaffQueue();
+    });
+
+    // --- DESIGN RENDER ENGINES ---
     function renderTabs() {
       const container = document.getElementById('tabsContainer');
       container.innerHTML = '';
@@ -207,7 +208,7 @@
       });
     }
 
-    // --- BROADCAST PLACING ORDERS OVER THE AIR ---
+    // --- INTERACTIVE DISPATCH (WRITES TO FIREBASE) ---
     function promptOrder(name, price) {
       const quantityStr = prompt(`How many servings of "${name}" would you like to request?`, "1");
       if (quantityStr === null) return;
@@ -219,10 +220,8 @@
       }
 
       const ticketNumber = Math.floor(1000 + Math.random() * 9000);
-      const orderId = Date.now() + "_" + ticketNumber;
       
-      const orderItem = {
-        id: orderId,
+      const newOrder = {
         ticket: ticketNumber,
         itemName: name,
         qty: qty,
@@ -230,25 +229,30 @@
         status: "Pending Verification"
       };
 
-      // Broadcast order event out to your secure HiveMQ stream
-      client.publish(MQTT_TOPIC_ORDERS, JSON.stringify({ action: "create", data: orderItem }));
+      // Push straight up into global database structure
+      db.ref('orders').push(newOrder);
 
-      // Track this ticket locally on the customer's browser
+      // Keep ticket reference locally so this device knows it belongs to them
       myLocalTickets.push(ticketNumber);
-      localStorage.setItem('mqtt_hfc_local_tickets', JSON.stringify(myLocalTickets));
+      localStorage.setItem('my_placed_tickets', JSON.stringify(myLocalTickets));
 
-      alert(`🎉 Order Dispatched!\n\nYour Ticket ID: HFC-${ticketNumber}\n\nOur kitchen staff terminals will refresh with your details instantly!`);
+      alert(`🎉 Order Dispatched!\n\nYour Verification Ticket: HFC-${ticketNumber}\n\nOur kitchen staff monitors are processing it now!`);
       renderCustomerTickets();
     }
 
-    // --- RENDER SCREEN VIEWS ---
+    // --- CUSTOMER VERIFICATION CHIPS ---
     function renderCustomerTickets() {
       const sec = document.getElementById('customerTicketsSection');
       const box = document.getElementById('customerTicketsContainer');
       box.innerHTML = '';
 
+      // Filter global orders to show only the ones requested by THIS browser session
       const myOrders = orderQueue.filter(o => myLocalTickets.includes(o.ticket));
-      if (myOrders.length === 0) { sec.classList.add('hidden'); return; }
+
+      if (myOrders.length === 0) {
+        sec.classList.add('hidden');
+        return;
+      }
       sec.classList.remove('hidden');
 
       myOrders.forEach(order => {
@@ -265,6 +269,7 @@
       });
     }
 
+    // --- LIVE STAFF CONTROL OVERRIDE DECK ---
     function renderStaffQueue() {
       const container = document.getElementById('staffOrdersQueue');
       container.innerHTML = '';
@@ -290,31 +295,31 @@
             </div>
             <div class="flex items-center gap-2 self-end sm:self-auto">
               <span class="text-[10px] uppercase font-bold px-2 py-1 rounded ${isVerified ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${order.status}</span>
-              ${!isVerified ? `<button onclick="broadcastVerify('${order.id}')" class="bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-bold px-3 py-1.5 rounded text-[11px]">Verify & Approve</button>` : ''}
-              <button onclick="broadcastDelete('${order.id}')" class="bg-stone-950 hover:bg-red-950/40 border border-stone-800 text-stone-500 hover:text-red-400 p-1.5 rounded text-xs">✕</button>
+              ${!isVerified ? `<button onclick="verifyOrder('${order.firebaseKey}')" class="bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-bold px-3 py-1.5 rounded text-[11px]">Verify & Approve</button>` : ''}
+              <button onclick="deleteOrder('${order.firebaseKey}')" class="bg-stone-950 hover:bg-red-950/40 border border-stone-800 text-stone-500 hover:text-red-400 p-1.5 rounded text-xs">✕</button>
             </div>
           </div>
         `;
       });
     }
 
-    // --- NETWORK COMMUTATORS ---
-    function broadcastVerify(id) {
-      client.publish(MQTT_TOPIC_ORDERS, JSON.stringify({ action: "verify", id: id }));
+    // --- MUTATION COMMANDS (PUSHES DIRECTLY TO CLOUD) ---
+    function verifyOrder(key) {
+      db.ref(`orders/${key}`).update({ status: "Verified & Preparing" });
     }
 
-    function broadcastDelete(id) {
-      client.publish(MQTT_TOPIC_ORDERS, JSON.stringify({ action: "delete", id: id }));
+    function deleteOrder(key) {
+      db.ref(`orders/${key}`).remove();
     }
 
     function updatePrice(id) {
       const val = parseFloat(document.getElementById(`inputPrice-${id}`).value);
       if (!isNaN(val) && val >= 0) {
-        client.publish(MQTT_TOPIC_PRICES, JSON.stringify({ id: id, price: val }));
+        db.ref(`menu_prices/${id}`).set(val);
       }
     }
 
-    // --- SECURITY CONTROLLER ACCESS TERMINALS ---
+    // --- PORTAL LOGIN CONTROL SHUTTERS ---
     function attemptLogin() {
       if (document.getElementById('passcodeInput').value === CORRECT_PASSCODE) {
         isAdmin = true;
@@ -334,7 +339,7 @@
       document.getElementById('passcodeInput').value = '';
       document.getElementById('adminLoginForm').classList.remove('hidden');
       document.getElementById('adminControls').classList.add('hidden');
-      document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-emerald-500 block";
+      document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-stone-600 block";
       document.getElementById('statusText').innerText = "Staff Dashboard";
       renderMenu();
     }
@@ -344,8 +349,6 @@
     }
 
     renderTabs();
-    renderMenu();
-    renderCustomerTickets();
   </script>
 </body>
 </html>
