@@ -26,7 +26,7 @@
       </h1>
       <div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto my-4"></div>
       <p class="text-stone-400 text-sm md:text-base max-w-md mx-auto leading-relaxed">
-        Bismillah. Place your order on any device—our staff kitchen monitors will refresh instantly.
+        Bismillah. Scan, select your table number, and place your order. Our kitchen monitors will refresh instantly.
       </p>
     </div>
 
@@ -39,9 +39,9 @@
   <div id="customerTicketsSection" class="max-w-5xl mx-auto px-4 mt-6 hidden">
     <div class="bg-amber-500/5 border border-amber-500/20 p-4 rounded-xl flex flex-col gap-3">
       <div class="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
-        <span>🎟️</span> Your Active Verification Tickets (Synced Live)
+        <span>🎟️</span> Your Active Tickets & Dining Feedback
       </div>
-      <div id="customerTicketsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
+      <div id="customerTicketsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
     </div>
   </div>
 
@@ -95,26 +95,27 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // Adjusted Menu Prices to realistic ETB (Ethiopian Birr) structures
     const DEFAULT_MENU = [
-      { id: 1, name: "Chicken Shawarma Wrap", category: "Wraps", price: 9.50, desc: "Slow-roasted chicken, garlic sauce, and pickles in fresh flatbread.", img: "https://images.unsplash.com/photo-1561651823-34fed022540e?auto=format&fit=crop&w=600&q=80" },
-      { id: 2, name: "Premium Lamb Gyro", category: "Wraps", price: 10.99, desc: "Tender seasoned lamb wrapped with tomatoes, onions, and tzatziki.", img: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=80" },
-      { id: 3, name: "Mixed Grill Rice Platter", category: "Platters", price: 18.50, desc: "Skewers of chicken tikka and beef kofta served over spiced basmati rice.", img: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=600&q=80" },
-      { id: 4, name: "Falafel & Hummus Plate", category: "Platters", price: 12.00, desc: "Crispy house falafels served alongside velvet-smooth chickpea dip and hot pita.", img: "https://images.unsplash.com/photo-1547058886-af77992d478c?auto=format&fit=crop&w=600&q=80" },
-      { id: 5, name: "Halal Beef Smash Burger", category: "Burgers", price: 11.50, desc: "Double crisp-crust beef patties, double real cheddar cheese, and custom house sauce.", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" },
-      { id: 6, name: "Fresh Mango Lassi", category: "Drinks", price: 4.00, desc: "Creamy traditional mango yogurt smoothly churned with rich cardamom accents.", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=600&q=80" }
+      { id: 1, name: "Chicken Shawarma Wrap", category: "Wraps", price: 350.00, desc: "Slow-roasted chicken, garlic sauce, and pickles in fresh flatbread.", img: "https://images.unsplash.com/photo-1561651823-34fed022540e?auto=format&fit=crop&w=600&q=80" },
+      { id: 2, name: "Premium Lamb Gyro", category: "Wraps", price: 420.00, desc: "Tender seasoned lamb wrapped with tomatoes, onions, and tzatziki.", img: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=80" },
+      { id: 3, name: "Mixed Grill Rice Platter", category: "Platters", price: 680.00, desc: "Skewers of chicken tikka and beef kofta served over spiced basmati rice.", img: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=600&q=80" },
+      { id: 4, name: "Falafel & Hummus Plate", category: "Platters", price: 400.00, desc: "Crispy house falafels served alongside velvet-smooth chickpea dip and hot pita.", img: "https://images.unsplash.com/photo-1547058886-af77992d478c?auto=format&fit=crop&w=600&q=80" },
+      { id: 5, name: "Halal Beef Smash Burger", category: "Burgers", price: 450.00, desc: "Double crisp-crust beef patties, double real cheddar cheese, and custom house sauce.", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" },
+      { id: 6, name: "Fresh Mango Lassi", category: "Drinks", price: 150.00, desc: "Creamy traditional mango yogurt smoothly churned with rich cardamom accents.", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=600&q=80" }
     ];
 
     const CORRECT_PASSCODE = "3002";
     let menuItems = DEFAULT_MENU;
     let orderQueue = [];
     let myLocalTickets = JSON.parse(localStorage.getItem('my_placed_tickets')) || [];
+    let mySubmittedReviews = JSON.parse(localStorage.getItem('my_submitted_reviews')) || [];
     let isAdmin = false;
     let currentCategory = "All";
 
     const categories = ["All", ...new Set(DEFAULT_MENU.map(item => item.category))];
 
     // --- STREAM DATA IN REAL-TIME FROM FIREBASE ---
-    // Handle status confirmation badge inside header
     db.ref('.info/connected').on('value', (snapshot) => {
       if (snapshot.val() === true) {
         document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-emerald-400 block animate-pulse";
@@ -125,7 +126,6 @@
       }
     });
 
-    // Listen for live updates to the menu pricing structure across devices
     db.ref('menu_prices').on('value', (snapshot) => {
       const livePrices = snapshot.val();
       if (livePrices) {
@@ -137,7 +137,6 @@
       renderMenu();
     });
 
-    // Listen for live database ticket adjustments
     db.ref('orders').on('value', (snapshot) => {
       const data = snapshot.val();
       orderQueue = data ? Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] })) : [];
@@ -174,7 +173,7 @@
               <div class="p-5">
                 <div class="flex justify-between items-start gap-2">
                   <h3 class="font-bold text-lg text-stone-100 group-hover:text-amber-400 transition-colors">${item.name}</h3>
-                  <span class="font-mono font-bold text-emerald-400 text-lg">$${item.price.toFixed(2)}</span>
+                  <span class="font-mono font-bold text-emerald-400 text-lg">${item.price.toFixed(2)} ETB</span>
                 </div>
                 <p class="text-xs text-stone-400 mt-2 leading-relaxed">${item.desc}</p>
               </div>
@@ -185,7 +184,7 @@
                 <div class="mt-4 pt-3 border-t border-stone-800 flex items-center justify-between bg-stone-950 p-2 rounded-xl border border-stone-800">
                   <span class="text-[10px] text-stone-500 font-mono font-bold">Live Override:</span>
                   <div class="flex items-center gap-1">
-                    <input type="number" step="0.01" value="${item.price}" id="inputPrice-${item.id}" class="w-14 bg-stone-900 border border-stone-800 text-xs text-center font-mono rounded p-1 text-amber-400 focus:outline-none"/>
+                    <input type="number" step="1" value="${item.price}" id="inputPrice-${item.id}" class="w-20 bg-stone-900 border border-stone-800 text-xs text-center font-mono rounded p-1 text-amber-400 focus:outline-none"/>
                     <button onclick="updatePrice(${item.id})" class="bg-amber-400 text-stone-950 px-2 py-1 rounded text-[10px] font-bold">Set</button>
                   </div>
                 </div>
@@ -196,68 +195,101 @@
       });
     }
 
-    // --- INTERACTIVE DISPATCH (WRITES TO FIREBASE) ---
+    // --- INTERACTIVE DISPATCH WITH TABLE SELECTION ---
     function promptOrder(name, price) {
-      const quantityStr = prompt(`How many servings of "${name}" would you like to request?`, "1");
+      const quantityStr = prompt(`How many servings of "${name}" would you like?`, "1");
       if (quantityStr === null) return;
-      
       const qty = parseInt(quantityStr, 10);
-      if (isNaN(qty) || qty <= 0) {
-        alert("🚨 Please enter a valid quantity amount.");
-        return;
-      }
+      if (isNaN(qty) || qty <= 0) { alert("🚨 Please enter a valid quantity."); return; }
+
+      const tableStr = prompt(`Please enter your Table Number (e.g., 1, 4, 12):`);
+      if (tableStr === null || tableStr.trim() === "") { alert("🚨 Table number required to place order."); return; }
+      const tableNum = tableStr.trim();
 
       const ticketNumber = Math.floor(1000 + Math.random() * 9000);
       
       const newOrder = {
         ticket: ticketNumber,
+        table: tableNum,
         itemName: name,
         qty: qty,
         total: price * qty,
         status: "Pending Verification"
       };
 
-      // Push straight up into global database structure
       db.ref('orders').push(newOrder);
 
-      // Keep ticket reference locally so this device knows it belongs to them
       myLocalTickets.push(ticketNumber);
       localStorage.setItem('my_placed_tickets', JSON.stringify(myLocalTickets));
 
-      alert(`🎉 Order Dispatched!\n\nYour Verification Ticket: HFC-${ticketNumber}\n\nOur kitchen staff monitors are processing it now!`);
+      alert(`🎉 Order Sent to Kitchen!\n\nTicket: HFC-${ticketNumber}\nTable: ${tableNum}\n\nOur kitchen staff will prepare your meal immediately!`);
       renderCustomerTickets();
     }
 
-    // --- CUSTOMER VERIFICATION CHIPS ---
+    // --- CUSTOMER TICKETS WITH BUILT-IN REVIEW MODULE ---
     function renderCustomerTickets() {
       const sec = document.getElementById('customerTicketsSection');
       const box = document.getElementById('customerTicketsContainer');
       box.innerHTML = '';
 
-      // Filter global orders to show only the ones requested by THIS browser session
       const myOrders = orderQueue.filter(o => myLocalTickets.includes(o.ticket));
-
-      if (myOrders.length === 0) {
-        sec.classList.add('hidden');
-        return;
-      }
+      if (myOrders.length === 0) { sec.classList.add('hidden'); return; }
       sec.classList.remove('hidden');
 
       myOrders.forEach(order => {
         const isVerified = order.status === "Verified & Preparing";
+        const hasReviewed = mySubmittedReviews.includes(order.ticket);
+
         box.innerHTML += `
-          <div class="p-3 bg-stone-900 border rounded-lg flex flex-col justify-between ${isVerified ? 'border-emerald-500/30' : 'border-stone-800'}">
+          <div class="p-4 bg-stone-900/90 border rounded-xl flex flex-col justify-between gap-4 ${isVerified ? 'border-emerald-500/30' : 'border-stone-800'}">
             <div class="flex justify-between items-center">
-              <span class="font-mono text-xs font-black bg-stone-950 px-2 py-0.5 rounded text-stone-300">HFC-${order.ticket}</span>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${isVerified ? 'text-emerald-400 border-emerald-500/20 bg-emerald-500/5' : 'text-amber-400 border-amber-500/20 bg-amber-500/5'}">${order.status}</span>
+              <div>
+                <span class="font-mono text-xs font-black bg-stone-950 px-2 py-1 rounded text-stone-300">HFC-${order.ticket}</span>
+                <span class="font-mono text-xs font-bold bg-amber-500/10 text-amber-400 px-2 py-1 rounded ml-2">Table ${order.table}</span>
+              </div>
+              <span class="text-[10px] font-bold px-2 py-1 rounded border ${isVerified ? 'text-emerald-400 border-emerald-500/20 bg-emerald-500/5' : 'text-amber-400 border-amber-500/20 bg-amber-500/5'}">${order.status}</span>
             </div>
-            <div class="mt-2 text-xs"><span class="font-bold text-stone-200">${order.qty}x</span> ${order.itemName}</div>
+            <div class="text-sm"><span class="font-bold text-amber-400">${order.qty}x</span> ${order.itemName} <span class="text-xs text-stone-500 font-mono">(${order.total.toFixed(2)} ETB)</span></div>
+            
+            <div class="pt-3 border-t border-stone-800/60 bg-stone-950/40 p-3 rounded-lg">
+              ${hasReviewed ? `
+                <p class="text-[11px] text-emerald-400 font-medium flex items-center gap-1"><span>✨</span> Thank you for your feedback!</p>
+              ` : `
+                <p class="text-[11px] text-stone-400 mb-2 font-medium">How is your dining experience?</p>
+                <div class="flex items-center justify-between">
+                  <div class="flex gap-1 text-lg">
+                    ${[1,2,3,4,5].map(star => `<button onclick="submitStarRating(${order.ticket}, '${order.itemName}', ${star})" class="text-stone-600 hover:text-amber-400 transition-colors">★</button>`).join('')}
+                  </div>
+                  <span class="text-[10px] text-stone-500 uppercase tracking-wider">Tap Star to Submit</span>
+                </div>
+              `}
+            </div>
           </div>
         `;
       });
     }
 
-    // --- LIVE STAFF CONTROL OVERRIDE DECK ---
+    // --- LEAVE REVIEW OPERATION TO DATABASE ---
+    function submitStarRating(ticketId, itemName, stars) {
+      const reviewPayload = {
+        ticket: ticketId,
+        item: itemName,
+        rating: stars,
+        timestamp: Date.now()
+      };
+
+      // Store centrally in database under reviews tree
+      db.ref('reviews').push(reviewPayload);
+
+      // Track locally so they can't spam review the same item
+      mySubmittedReviews.push(ticketId);
+      localStorage.setItem('my_submitted_reviews', JSON.stringify(mySubmittedReviews));
+
+      alert(`⭐⭐⭐⭐⭐\nThank you for rating "${itemName}" ${stars} stars!`);
+      renderCustomerTickets();
+    }
+
+    // --- LIVE STAFF CONTROL OVERRIDE DECK (KITCHEN STAFF SCREEN) ---
     function renderStaffQueue() {
       const container = document.getElementById('staffOrdersQueue');
       container.innerHTML = '';
@@ -272,18 +304,18 @@
         container.innerHTML += `
           <div class="flex flex-col sm:flex-row justify-between sm:items-center p-4 bg-stone-900 border border-stone-800 rounded-xl gap-4 font-mono text-xs">
             <div class="flex items-center gap-4">
-              <div class="bg-amber-400/10 border border-amber-400/20 px-3 py-1.5 rounded-lg text-center">
-                <p class="text-[9px] text-stone-500 uppercase">Ticket ID</p>
-                <p class="text-sm font-bold text-amber-400">HFC-${order.ticket}</p>
+              <div class="bg-amber-400/10 border border-amber-400/20 px-3 py-1.5 rounded-lg text-center min-w-[80px]">
+                <p class="text-[9px] text-stone-500 uppercase">TABLE</p>
+                <p class="text-base font-black text-amber-400">${order.table}</p>
               </div>
               <div>
                 <p class="text-sm font-bold text-stone-100">${order.qty}x ${order.itemName}</p>
-                <p class="text-[11px] text-stone-400 mt-0.5">Value: $${order.total.toFixed(2)}</p>
+                <p class="text-[11px] text-stone-400 mt-0.5">Ticket ID: HFC-${order.ticket} | Value: ${order.total.toFixed(2)} ETB</p>
               </div>
             </div>
             <div class="flex items-center gap-2 self-end sm:self-auto">
               <span class="text-[10px] uppercase font-bold px-2 py-1 rounded ${isVerified ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${order.status}</span>
-              ${!isVerified ? `<button onclick="verifyOrder('${order.firebaseKey}')" class="bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-bold px-3 py-1.5 rounded text-[11px]">Verify & Approve</button>` : ''}
+              ${!isVerified ? `<button onclick="verifyOrder('${order.firebaseKey}')" class="bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-bold px-3 py-1.5 rounded text-[11px]">Approve Order</button>` : ''}
               <button onclick="deleteOrder('${order.firebaseKey}')" class="bg-stone-950 hover:bg-red-950/40 border border-stone-800 text-stone-500 hover:text-red-400 p-1.5 rounded text-xs">✕</button>
             </div>
           </div>
@@ -291,21 +323,12 @@
       });
     }
 
-    // --- MUTATION COMMANDS (PUSHES DIRECTLY TO CLOUD) ---
-    function verifyOrder(key) {
-      db.ref(`orders/${key}`).update({ status: "Verified & Preparing" });
-    }
-
-    function deleteOrder(key) {
-      db.ref(`orders/${key}`).remove();
-    }
-
-    // Updates price globally in Firebase
+    // --- MUTATION COMMANDS ---
+    function verifyOrder(key) { db.ref(`orders/${key}`).update({ status: "Verified & Preparing" }); }
+    function deleteOrder(key) { db.ref(`orders/${key}`).remove(); }
     function updatePrice(id) {
       const val = parseFloat(document.getElementById(`inputPrice-${id}`).value);
-      if (!isNaN(val) && val >= 0) {
-        db.ref(`menu_prices/${id}`).set(val);
-      }
+      if (!isNaN(val) && val >= 0) { db.ref(`menu_prices/${id}`).set(val); }
     }
 
     // --- PORTAL LOGIN CONTROL SHUTTERS ---
@@ -333,9 +356,7 @@
       renderMenu();
     }
 
-    function scrollToAdmin() {
-      document.getElementById('adminSection').scrollIntoView({ behavior: 'smooth' });
-    }
+    function scrollToAdmin() { document.getElementById('adminSection').scrollIntoView({ behavior: 'smooth' }); }
 
     renderTabs();
     renderMenu();
