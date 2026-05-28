@@ -55,8 +55,7 @@
       
       <div id="adminLoginForm" class="bg-stone-950 border border-stone-800 p-6 rounded-2xl shadow-2xl max-w-md mx-auto text-center">
         <div class="inline-block p-2 bg-stone-900 rounded-full text-amber-500 mb-3">🔒</div>
-        <h4 class="text-sm font-bold uppercase tracking-wider text-stone-300 mb-2">Internal Staff Access</h4>
-        <p class="text-xs text-stone-500 mb-4 font-mono">Use Admin Code (3002) or Chef Code (2002)</p>
+        <h4 class="text-sm font-bold uppercase tracking-wider text-stone-300 mb-4">Internal Staff Access</h4>
         <div class="flex gap-2">
           <input type="password" id="passcodeInput" placeholder="Enter Security Code" class="w-full bg-stone-900 border border-stone-800 text-sm rounded-lg px-3 py-2 text-stone-200 placeholder-stone-600 font-mono focus:outline-none focus:border-stone-700" />
           <button onclick="attemptLogin()" class="bg-amber-400 text-stone-950 font-bold text-xs uppercase px-5 rounded-lg tracking-wider hover:bg-amber-300 transition-all">Verify</button>
@@ -115,7 +114,7 @@
         <div class="bg-stone-950 border border-stone-800 p-6 rounded-2xl shadow-xl">
           <div class="flex items-center justify-between border-b border-stone-800 pb-4 mb-4">
             <h3 class="text-xs font-bold uppercase text-emerald-400 tracking-widest font-mono">✦ Live Transmission Pipeline (Incoming Tickets)</h3>
-            <span class="text-[10px] font-mono text-stone-500 bg-stone-900 px-2 py-1 rounded" id="queueTotalDisplay">0 Active Orders</span>
+            <span class="text-[10px] font-mono text-stone-500 bg-stone-900 px-2 py-1 rounded" id="queueTotalDisplay">0 Active Tickets</span>
           </div>
           <div id="staffOrdersQueue" class="space-y-3"></div>
         </div>
@@ -264,7 +263,6 @@
         elapsedMinutes: null
       };
 
-      // Set directly using the unique randomized ticket identifier key string
       db.ref(`orders/TICKET-${ticketNumber}`).set(newOrder);
       myLocalTickets.push(ticketNumber);
       localStorage.setItem('my_placed_tickets', JSON.stringify(myLocalTickets));
@@ -373,7 +371,6 @@
       visibleOrders.forEach(order => {
         let actionButtons = '';
         if (order.status === "Pending Kitchen Approval") {
-          // Fixed verification handler path parameters routing passing explicit target node key strings
           actionButtons = `<button onclick="approveTicket('TICKET-${order.ticket}')" class="bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow-lg transition-colors">Approve Order</button>`;
         } else if (order.status === "Preparing & Cooking") {
           actionButtons = `<span class="text-[10px] bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1.5 rounded-xl font-mono font-bold uppercase tracking-wider">Cooking...</span>`;
@@ -402,6 +399,7 @@
       });
     }
 
+    // --- MUTATION ACTIONS ---
     function approveTicket(nodeKey) {
       db.ref(`orders/${nodeKey}`).update({
         status: "Preparing & Cooking",
@@ -409,7 +407,6 @@
       });
     }
 
-    // --- PURGE RECOVER RECONCILIATION DECK ---
     function purgeTicket(nodeKey) { 
       if (confirm("Permanently wipe configuration record?")) {
         db.ref(`orders/${nodeKey}`).remove(); 
@@ -469,7 +466,7 @@
       document.getElementById('statAvgTime').innerText = `${averageVal} min`;
     }
 
-    // --- SYSTEM SECURITY HANDSHAKE CONTROL PORTALS ---
+    // --- CENTRAL PRIVILEGE AUTH SCHEMATICS ---
     function attemptLogin() {
       const pin = document.getElementById('passcodeInput').value.trim();
       const errBox = document.getElementById('loginError');
