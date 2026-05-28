@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Halal Food Corner - Live Firebase Sync</title>
+  <title>Halal Food Corner - Enterprise Cloud System</title>
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- FIREBASE PLATFORM CORE & REALTIME DATABASE SCRIPTS -->
@@ -21,20 +21,20 @@
 
     <div class="max-w-3xl mx-auto relative">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-4">
-        <span>🕌</span> 100% Certified Halal <span>✦</span> Live Firebase Cloud Sync
+        <span>🕌</span> 100% Certified Halal <span>✦</span> Smart Management Terminal
       </div>
       <h1 class="text-4xl md:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-500 font-serif">
         HALAL FOOD CORNER
       </h1>
       <div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto my-4"></div>
       <p class="text-stone-400 text-sm md:text-base max-w-md mx-auto leading-relaxed">
-        Bismillah. Scan, select your table number, and place your order. Our kitchen monitors will refresh instantly.
+        Bismillah. Input your table number, dispatch your order ticket, and watch our cloud status indicators update.
       </p>
     </div>
 
     <button id="adminStatusBtn" onclick="scrollToAdmin()" class="absolute top-4 right-4 flex items-center gap-2 text-[11px] px-3 py-1.5 rounded-lg border border-stone-800 bg-stone-950 text-stone-400 hover:text-white transition-all shadow-lg">
       <span class="w-1.5 h-1.5 rounded-full bg-red-500 block" id="statusDot"></span>
-      <span id="statusText">Connecting Firebase...</span>
+      <span id="statusText">Awaiting Authentication</span>
     </button>
   </header>
 
@@ -42,7 +42,7 @@
   <div id="customerTicketsSection" class="max-w-5xl mx-auto px-4 mt-6 hidden">
     <div class="bg-amber-500/5 border border-amber-500/20 p-4 rounded-xl flex flex-col gap-3">
       <div class="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
-        <span>🎟️</span> Your Active Tickets & Dining Feedback
+        <span>🎟️</span> Active Tickets & Live Order Progress
       </div>
       <div id="customerTicketsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
     </div>
@@ -54,40 +54,89 @@
     <div id="menuContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
   </main>
 
-  <!-- ADMIN SECURITY DESK & INCOMING ORDERS TERMINAL -->
+  <!-- STAFF SYSTEMS GATEWAY -->
   <footer id="adminSection" class="bg-stone-900/50 border-t border-stone-900 py-16 px-6 mt-24 relative z-10">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-5xl mx-auto">
       
-      <!-- Password Protection Core Panel -->
+      <!-- Password Protection Gateway Form -->
       <div id="adminLoginForm" class="bg-stone-950 border border-stone-800 p-6 rounded-2xl shadow-2xl max-w-md mx-auto text-center">
         <div class="inline-block p-2 bg-stone-900 rounded-full text-amber-500 mb-3">🔒</div>
-        <h4 class="text-sm font-bold uppercase tracking-wider text-stone-300 mb-4">Secure Terminal Operations</h4>
+        <h4 class="text-sm font-bold uppercase tracking-wider text-stone-300 mb-2">Internal Staff Access</h4>
+        <p class="text-xs text-stone-500 mb-4 font-mono">Use Admin Code (3002) or Chef Code (2002)</p>
         <div class="flex gap-2">
-          <input type="password" id="passcodeInput" placeholder="Enter Staff Passcode" class="w-full bg-stone-900 border border-stone-800 text-sm rounded-lg px-3 py-2 text-stone-200 placeholder-stone-600 font-mono focus:outline-none focus:border-stone-700" />
-          <button onclick="attemptLogin()" class="bg-amber-400 text-stone-950 font-bold text-xs uppercase px-5 rounded-lg tracking-wider hover:bg-amber-300 transition-all">Unlock</button>
+          <input type="password" id="passcodeInput" placeholder="Enter Security Code" class="w-full bg-stone-900 border border-stone-800 text-sm rounded-lg px-3 py-2 text-stone-200 placeholder-stone-600 font-mono focus:outline-none focus:border-stone-700" />
+          <button onclick="attemptLogin()" class="bg-amber-400 text-stone-950 font-bold text-xs uppercase px-5 rounded-lg tracking-wider hover:bg-amber-300 transition-all">Verify</button>
         </div>
-        <p id="loginError" class="text-[11px] text-red-400 font-mono mt-2 hidden">✕ Access Refused: Invalid Credentials</p>
+        <p id="loginError" class="text-[11px] text-red-400 font-mono mt-2 hidden">✕ Access Refused: Code combination rejected</p>
       </div>
 
-      <!-- FULLY EXTENDED STAFF SYSTEM MANAGEMENT CONSOLE -->
-      <div id="adminControls" class="hidden space-y-8">
+      <!-- OUTSIDE CONTAINER CONTROL PANEL WRAPPER -->
+      <div id="staffConsoleWrapper" class="hidden space-y-8">
+        
+        <div class="flex items-center justify-between border-b border-stone-800 pb-4">
+          <div class="flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full bg-emerald-500 block shadow-[0_0_10px_#10b981]"></span>
+            <h2 id="consoleRoleTitle" class="text-xl font-black uppercase tracking-widest text-stone-100">Staff Console</h2>
+          </div>
+          <button onclick="logoutStaff()" class="text-xs bg-stone-950 border border-stone-800 text-stone-400 px-4 py-2 rounded-xl hover:text-white transition-colors font-mono">Terminate Session</button>
+        </div>
+
+        <!-- ================= ADMIN EXCLUSIVE: ANALYTICS & ADD FOOD ================= -->
+        <div id="adminOnlySuite" class="grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
+          
+          <!-- Financial Performance Dashboard Analytics -->
+          <div class="bg-stone-950 border border-stone-800 p-6 rounded-2xl space-y-4">
+            <h3 class="text-xs font-bold uppercase text-amber-400 tracking-wider font-mono">✦ Financial Analytics Dashboard</h3>
+            <div class="grid grid-cols-1 gap-3">
+              <div class="bg-stone-900/60 p-3 rounded-xl border border-stone-800">
+                <span class="text-[10px] text-stone-500 uppercase block font-bold font-mono">Gross Volume Sold</span>
+                <span id="statRevenue" class="text-2xl font-black font-mono text-emerald-400">0.00 ETB</span>
+              </div>
+              <div class="bg-stone-900/60 p-3 rounded-xl border border-stone-800">
+                <span class="text-[10px] text-stone-500 uppercase block font-bold font-mono">Dispatched Invoices</span>
+                <span id="statSalesCount" class="text-2xl font-black font-mono text-stone-200">0</span>
+              </div>
+              <div class="bg-stone-900/60 p-3 rounded-xl border border-stone-800">
+                <span class="text-[10px] text-stone-500 uppercase block font-bold font-mono">Avg Service Velocity</span>
+                <span id="statAvgTime" class="text-2xl font-black font-mono text-amber-400">0.0 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Menu Configuration Portal (Add New Items) -->
+          <div class="bg-stone-950 border border-stone-800 p-6 rounded-2xl lg:col-span-2 space-y-4">
+            <h3 class="text-xs font-bold uppercase text-amber-400 tracking-wider font-mono">✦ Live Menu Configuration Deck</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <input type="text" id="newItemName" placeholder="Item Name (e.g., Crispy Beef Sambusa)" class="bg-stone-900 border border-stone-800 text-xs rounded-xl p-2.5 text-stone-200 focus:outline-none focus:border-stone-700" />
+              <input type="number" id="newItemPrice" placeholder="Price in ETB" class="bg-stone-900 border border-stone-800 text-xs rounded-xl p-2.5 text-stone-200 focus:outline-none focus:border-stone-700" />
+              <select id="newItemCategory" class="bg-stone-900 border border-stone-800 text-xs rounded-xl p-2.5 text-stone-400 focus:outline-none focus:border-stone-700">
+                <option value="Wraps">Wraps</option>
+                <option value="Platters">Platters</option>
+                <option value="Burgers">Burgers</option>
+                <option value="Drinks">Drinks</option>
+              </select>
+              <input type="text" id="newItemImg" placeholder="Unsplash Image URL" class="bg-stone-900 border border-stone-800 text-xs rounded-xl p-2.5 text-stone-200 focus:outline-none focus:border-stone-700" />
+              <input type="text" id="newItemDesc" placeholder="Brief culinary description..." class="bg-stone-900 border border-stone-800 text-xs rounded-xl p-2.5 text-stone-200 md:col-span-2 focus:outline-none focus:border-stone-700" />
+            </div>
+            <button onclick="createNewFoodItem()" class="w-full bg-amber-400 text-stone-950 font-black text-xs uppercase py-3 rounded-xl hover:bg-amber-300 transition-all tracking-widest shadow-xl">Deploy Product Asset to Live Menu</button>
+          </div>
+        </div>
+
+        <!-- ================= SHARED: LIVE KITCHEN QUEUE VIEW ================= -->
         <div class="bg-stone-950 border border-stone-800 p-6 rounded-2xl shadow-xl">
           <div class="flex items-center justify-between border-b border-stone-800 pb-4 mb-4">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-              <h3 class="text-base font-bold text-emerald-400 uppercase tracking-wider">Live Incoming Order Queue</h3>
-            </div>
-            <button onclick="logoutAdmin()" class="text-xs bg-stone-900 border border-stone-800 text-stone-400 px-3 py-1 rounded hover:text-white transition-colors">Lock Console</button>
+            <h3 class="text-xs font-bold uppercase text-emerald-400 tracking-widest font-mono">✦ Live Transmission Pipeline (Incoming Tickets)</h3>
+            <span class="text-[10px] font-mono text-stone-500 bg-stone-900 px-2 py-1 rounded" id="queueTotalDisplay">0 Active Orders</span>
           </div>
           <div id="staffOrdersQueue" class="space-y-3"></div>
         </div>
-      </div>
 
+      </div>
     </div>
   </footer>
 
   <script>
-    // --- YOUR LIVE APPLIED FIREBASE APP CONFIG ---
+    // --- FIREBASE LIVE CONNECTIVITY ENVIRONMENT ---
     const firebaseConfig = {
       apiKey: "AIzaSyBjbm0b7EnAYcfV2BtwoFxtdkagdol52M8",
       authDomain: "halal-food-corner-5961e.firebaseapp.com",
@@ -98,12 +147,11 @@
       appId: "1:251600357503:web:b13efb9a77179ed36b574a"
     };
 
-    // Initialize Firebase Engine Interface
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Adjusted Menu Prices to realistic ETB (Ethiopian Birr) structures
-    const DEFAULT_MENU = [
+    // Default structural catalog base array
+    const INITIAL_CATALOG = [
       { id: 1, name: "Chicken Shawarma Wrap", category: "Wraps", price: 350.00, desc: "Slow-roasted chicken, garlic sauce, and pickles in fresh flatbread.", img: "https://images.unsplash.com/photo-1561651823-34fed022540e?auto=format&fit=crop&w=600&q=80" },
       { id: 2, name: "Premium Lamb Gyro", category: "Wraps", price: 420.00, desc: "Tender seasoned lamb wrapped with tomatoes, onions, and tzatziki.", img: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=80" },
       { id: 3, name: "Mixed Grill Rice Platter", category: "Platters", price: 680.00, desc: "Skewers of chicken tikka and beef kofta served over spiced basmati rice.", img: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=600&q=80" },
@@ -112,35 +160,38 @@
       { id: 6, name: "Fresh Mango Lassi", category: "Drinks", price: 150.00, desc: "Creamy traditional mango yogurt smoothly churned with rich cardamom accents.", img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=600&q=80" }
     ];
 
-    const CORRECT_PASSCODE = "3002";
-    let menuItems = DEFAULT_MENU;
+    const AUTH_ROLES = { ADMIN: "3002", CHEF: "2002" };
+    let currentRole = null; 
+    let menuItems = [];
     let orderQueue = [];
     let myLocalTickets = JSON.parse(localStorage.getItem('my_placed_tickets')) || [];
     let mySubmittedReviews = JSON.parse(localStorage.getItem('my_submitted_reviews')) || [];
-    let isAdmin = false;
     let currentCategory = "All";
 
-    const categories = ["All", ...new Set(DEFAULT_MENU.map(item => item.category))];
-
-    // --- STREAM DATA IN REAL-TIME FROM FIREBASE ---
+    // --- DATA STREAM PIPELINES FROM CLOUD DATABASE ---
     db.ref('.info/connected').on('value', (snapshot) => {
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
       if (snapshot.val() === true) {
-        document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-emerald-400 block animate-pulse";
-        document.getElementById('statusText').innerText = isAdmin ? "Console Active" : "Staff Dashboard";
+        statusDot.className = "w-1.5 h-1.5 rounded-full bg-emerald-400 block animate-pulse";
+        statusText.innerText = currentRole ? `${currentRole} Terminal Mode` : "Connected to Cloud";
       } else {
-        document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-red-500 block";
-        document.getElementById('statusText').innerText = "Offline";
+        statusDot.className = "w-1.5 h-1.5 rounded-full bg-red-500 block";
+        statusText.innerText = "Offline Network Connection";
       }
     });
 
-    db.ref('menu_prices').on('value', (snapshot) => {
-      const livePrices = snapshot.val();
-      if (livePrices) {
-        menuItems = DEFAULT_MENU.map(item => ({
-          ...item,
-          price: livePrices[item.id] !== undefined ? livePrices[item.id] : item.price
-        }));
+    // Sync menu completely from real-time dynamic node
+    db.ref('menu_catalog').on('value', (snapshot) => {
+      const data = snapshot.val();
+      if (!data) {
+        // Hydrate database with default menu assets structure on root execution setup
+        INITIAL_CATALOG.forEach(item => db.ref(`menu_catalog/${item.id}`).set(item));
+        menuItems = INITIAL_CATALOG;
+      } else {
+        menuItems = Object.keys(data).map(k => data[k]);
       }
+      renderTabs();
       renderMenu();
     });
 
@@ -149,13 +200,16 @@
       orderQueue = data ? Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] })) : [];
       renderCustomerTickets();
       renderStaffQueue();
+      if (currentRole === "ADMIN") calculateBusinessAnalytics();
     });
 
-    // --- DESIGN RENDER ENGINES ---
+    // --- RENDERING MODULES ---
     function renderTabs() {
       const container = document.getElementById('tabsContainer');
       container.innerHTML = '';
-      categories.forEach(cat => {
+      const uniqueCats = ["All", ...new Set(menuItems.map(item => item.category))];
+      
+      uniqueCats.forEach(cat => {
         const btn = document.createElement('button');
         btn.innerText = cat;
         btn.className = `px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all ${currentCategory === cat ? 'bg-amber-400 text-stone-950 shadow-lg' : 'bg-stone-900 text-stone-400 hover:bg-stone-800'}`;
@@ -180,20 +234,16 @@
               <div class="p-5">
                 <div class="flex justify-between items-start gap-2">
                   <h3 class="font-bold text-lg text-stone-100 group-hover:text-amber-400 transition-colors">${item.name}</h3>
-                  <span class="font-mono font-bold text-emerald-400 text-lg">${item.price.toFixed(2)} ETB</span>
+                  <span class="font-mono font-bold text-emerald-400 text-lg">${parseFloat(item.price).toFixed(2)} ETB</span>
                 </div>
                 <p class="text-xs text-stone-400 mt-2 leading-relaxed">${item.desc}</p>
               </div>
             </div>
             <div class="px-5 pb-5 pt-2">
               <button onclick="promptOrder('${item.name}', ${item.price})" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs uppercase py-2.5 rounded-xl shadow-md tracking-wider flex items-center justify-center gap-2"><span>🛒</span> Order Now</button>
-              ${isAdmin ? `
-                <div class="mt-4 pt-3 border-t border-stone-800 flex items-center justify-between bg-stone-950 p-2 rounded-xl border border-stone-800">
-                  <span class="text-[10px] text-stone-500 font-mono font-bold">Live Override:</span>
-                  <div class="flex items-center gap-1">
-                    <input type="number" step="1" value="${item.price}" id="inputPrice-${item.id}" class="w-20 bg-stone-900 border border-stone-800 text-xs text-center font-mono rounded p-1 text-amber-400 focus:outline-none"/>
-                    <button onclick="updatePrice(${item.id})" class="bg-amber-400 text-stone-950 px-2 py-1 rounded text-[10px] font-bold">Set</button>
-                  </div>
+              ${currentRole === "ADMIN" ? `
+                <div class="mt-3 pt-2 border-t border-stone-800 flex items-center justify-between">
+                  <button onclick="deleteFoodAsset('${item.id}')" class="text-[10px] bg-red-950/40 border border-red-900 text-red-400 px-2 py-1 rounded hover:bg-red-900 hover:text-white transition-all">Remove Item</button>
                 </div>
               ` : ''}
             </div>
@@ -202,38 +252,40 @@
       });
     }
 
-    // --- INTERACTIVE DISPATCH WITH TABLE SELECTION ---
+    // --- CLIENT-SIDE ORDER DISPATCH ---
     function promptOrder(name, price) {
       const quantityStr = prompt(`How many servings of "${name}" would you like?`, "1");
       if (quantityStr === null) return;
       const qty = parseInt(quantityStr, 10);
-      if (isNaN(qty) || qty <= 0) { alert("🚨 Please enter a valid quantity."); return; }
+      if (isNaN(qty) || qty <= 0) { alert("🚨 Quantity error format."); return; }
 
-      const tableStr = prompt(`Please enter your Table Number (e.g., 1, 4, 12):`);
-      if (tableStr === null || tableStr.trim() === "") { alert("🚨 Table number required to place order."); return; }
+      const tableStr = prompt(`Please input table structural coordinate number:`);
+      if (tableStr === null || tableStr.trim() === "") { alert("🚨 Execution denied: Table missing."); return; }
       const tableNum = tableStr.trim();
 
       const ticketNumber = Math.floor(1000 + Math.random() * 9000);
       
       const newOrder = {
+        id: ticketNumber, // Reference matching internal ID
         ticket: ticketNumber,
         table: tableNum,
         itemName: name,
         qty: qty,
         total: price * qty,
-        status: "Pending Verification"
+        status: "Pending Kitchen Approval",
+        createdTime: Date.now(),
+        approvedTime: null,
+        servedTime: null,
+        elapsedMinutes: null
       };
 
-      db.ref('orders').push(newOrder);
-
+      db.ref(`orders/TICKET-${ticketNumber}`).set(newOrder);
       myLocalTickets.push(ticketNumber);
       localStorage.setItem('my_placed_tickets', JSON.stringify(myLocalTickets));
-
-      alert(`🎉 Order Sent to Kitchen!\n\nTicket: HFC-${ticketNumber}\nTable: ${tableNum}\n\nOur kitchen staff will prepare your meal immediately!`);
       renderCustomerTickets();
     }
 
-    // --- CUSTOMER TICKETS WITH BUILT-IN REVIEW MODULE ---
+    // --- CLIENT LIVE TRACKING MODALITY ENGINE ---
     function renderCustomerTickets() {
       const sec = document.getElementById('customerTicketsSection');
       const box = document.getElementById('customerTicketsContainer');
@@ -244,127 +296,229 @@
       sec.classList.remove('hidden');
 
       myOrders.forEach(order => {
-        const isVerified = order.status === "Verified & Preparing";
         const hasReviewed = mySubmittedReviews.includes(order.ticket);
+        
+        let subActionBlock = '';
+        if (order.status === "Preparing & Cooking") {
+          subActionBlock = `
+            <button onclick="confirmOrderServed('TICKET-${order.ticket}')" class="w-full mt-2 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-stone-950 font-black text-xs uppercase py-2 rounded-xl shadow-md transition-all tracking-wider animate-pulse">
+              🍽️ Food Arrived! Mark as Served
+            </button>
+          `;
+        } else if (order.status === "Delivered & Completed") {
+          subActionBlock = `
+            <div class="pt-3 border-t border-stone-800/60 bg-stone-950/40 p-3 rounded-lg">
+              ${hasReviewed ? `
+                <p class="text-[11px] text-emerald-400 font-medium flex items-center gap-1"><span>✨</span> Feedback processed successfully. Shukran!</p>
+              ` : `
+                <p class="text-[11px] text-stone-400 mb-2 font-medium">Rate your dining culinary experience:</p>
+                <div class="flex items-center justify-between">
+                  <div class="flex gap-1 text-lg">
+                    ${[1,2,3,4,5].map(star => `<button onclick="submitStarRating(${order.ticket}, '${order.itemName}', ${star})" class="text-stone-600 hover:text-amber-400 transition-colors">★</button>`).join('')}
+                  </div>
+                  <span class="text-[10px] text-stone-500 tracking-wider">Tap Star</span>
+                </div>
+              `}
+            </div>
+          `;
+        } else {
+          subActionBlock = `<p class="text-[11px] text-stone-500 italic text-center py-1 bg-stone-950/50 rounded-lg border border-stone-900 font-mono">Awaiting Chef Verification...</p>`;
+        }
 
         box.innerHTML += `
-          <div class="p-4 bg-stone-900/90 border rounded-xl flex flex-col justify-between gap-4 ${isVerified ? 'border-emerald-500/30' : 'border-stone-800'}">
+          <div class="p-4 bg-stone-900/90 border rounded-xl flex flex-col justify-between gap-3 ${order.status==='Preparing & Cooking'?'border-amber-500/40 animate-pulse':order.status==='Delivered & Completed'?'border-emerald-500/20':'border-stone-800'}">
             <div class="flex justify-between items-center">
               <div>
                 <span class="font-mono text-xs font-black bg-stone-950 px-2 py-1 rounded text-stone-300">HFC-${order.ticket}</span>
                 <span class="font-mono text-xs font-bold bg-amber-500/10 text-amber-400 px-2 py-1 rounded ml-2">Table ${order.table}</span>
               </div>
-              <span class="text-[10px] font-bold px-2 py-1 rounded border ${isVerified ? 'text-emerald-400 border-emerald-500/20 bg-emerald-500/5' : 'text-amber-400 border-amber-500/20 bg-amber-500/5'}">${order.status}</span>
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-stone-800 bg-stone-950 text-amber-400">${order.status}</span>
             </div>
-            <div class="text-sm"><span class="font-bold text-amber-400">${order.qty}x</span> ${order.itemName} <span class="text-xs text-stone-500 font-mono">(${order.total.toFixed(2)} ETB)</span></div>
-            
-            <!-- REVIEW BOX SUBMODULE -->
-            <div class="pt-3 border-t border-stone-800/60 bg-stone-950/40 p-3 rounded-lg">
-              ${hasReviewed ? `
-                <p class="text-[11px] text-emerald-400 font-medium flex items-center gap-1"><span>✨</span> Thank you for your feedback!</p>
-              ` : `
-                <p class="text-[11px] text-stone-400 mb-2 font-medium">How is your dining experience?</p>
-                <div class="flex items-center justify-between">
-                  <div class="flex gap-1 text-lg">
-                    ${[1,2,3,4,5].map(star => `<button onclick="submitStarRating(${order.ticket}, '${order.itemName}', ${star})" class="text-stone-600 hover:text-amber-400 transition-colors">★</button>`).join('')}
-                  </div>
-                  <span class="text-[10px] text-stone-500 uppercase tracking-wider">Tap Star to Submit</span>
-                </div>
-              `}
-            </div>
+            <div class="text-sm font-medium"><span class="font-bold text-amber-400">${order.qty}x</span> ${order.itemName} <span class="text-xs text-stone-500 font-mono">(${parseFloat(order.total).toFixed(2)} ETB)</span></div>
+            ${subActionBlock}
           </div>
         `;
       });
     }
 
-    // --- LEAVE REVIEW OPERATION TO DATABASE ---
+    function confirmOrderServed(nodeKey) {
+      const finishTime = Date.now();
+      db.ref(`orders/${nodeKey}`).once('value', (snap) => {
+        const order = snap.val();
+        if (order && order.approvedTime) {
+          const deltaMs = finishTime - order.approvedTime;
+          const deltaMins = parseFloat((deltaMs / 1000 / 60).toFixed(2));
+          
+          db.ref(`orders/${nodeKey}`).update({
+            status: "Delivered & Completed",
+            servedTime: finishTime,
+            elapsedMinutes: deltaMins
+          });
+          alert(`❤️ Alhamdulillah! Hope you enjoy your meal! Service latency registered: ${deltaMins} minutes.`);
+        }
+      });
+    }
+
     function submitStarRating(ticketId, itemName, stars) {
-      const reviewPayload = {
-        ticket: ticketId,
-        item: itemName,
-        rating: stars,
-        timestamp: Date.now()
-      };
-
-      db.ref('reviews').push(reviewPayload);
-
+      db.ref('reviews').push({ ticket: ticketId, item: itemName, rating: stars, timestamp: Date.now() });
       mySubmittedReviews.push(ticketId);
       localStorage.setItem('my_submitted_reviews', JSON.stringify(mySubmittedReviews));
-
-      alert(`⭐⭐⭐⭐⭐\nThank you for rating "${itemName}" ${stars} stars!`);
       renderCustomerTickets();
     }
 
-    // --- LIVE STAFF CONTROL OVERRIDE DECK (KITCHEN STAFF SCREEN) ---
+    // --- STAFF CONSOLE CONCURRENT HANDLERS ---
     function renderStaffQueue() {
       const container = document.getElementById('staffOrdersQueue');
       container.innerHTML = '';
+      
+      // Filter logical array depending on active interface matrix constraints
+      let visibleOrders = orderQueue;
+      if (currentRole === "CHEF") {
+        // Chef context only receives current working pipelines
+        visibleOrders = orderQueue.filter(o => o.status !== "Delivered & Completed");
+      }
 
-      if (orderQueue.length === 0) {
-        container.innerHTML = `<p class="text-xs text-stone-500 text-center py-6 font-mono">Waiting for customer checkouts...</p>`;
+      document.getElementById('queueTotalDisplay').innerText = `${visibleOrders.length} Active System Invoices`;
+
+      if (visibleOrders.length === 0) {
+        container.innerHTML = `<p class="text-xs text-stone-500 text-center py-8 font-mono">No active operations in data node queue.</p>`;
         return;
       }
 
-      orderQueue.forEach(order => {
-        const isVerified = order.status === "Verified & Preparing";
+      visibleOrders.forEach(order => {
+        let actionButtons = '';
+        if (order.status === "Pending Kitchen Approval") {
+          actionButtons = `<button onclick="approveTicket('${order.firebaseKey}')" class="bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow-lg transition-colors">Approve Order</button>`;
+        } else if (order.status === "Preparing & Cooking") {
+          actionButtons = `<span class="text-[10px] bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1.5 rounded-xl font-mono animate-pulse font-bold uppercase tracking-wider">Cooking on Station</span>`;
+        } else {
+          actionButtons = `<span class="text-[10px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-xl font-mono font-bold uppercase tracking-wider">Served ✓ (${order.elapsedMinutes || 0} min)</span>`;
+        }
+
         container.innerHTML += `
-          <div class="flex flex-col sm:flex-row justify-between sm:items-center p-4 bg-stone-900 border border-stone-800 rounded-xl gap-4 font-mono text-xs">
+          <div class="flex flex-col md:flex-row justify-between md:items-center p-4 bg-stone-900 border border-stone-800 rounded-2xl gap-4 font-mono text-xs">
             <div class="flex items-center gap-4">
-              <!-- FIX: Table Number Block is now perfectly styled and fully active here -->
-              <div class="bg-amber-400/10 border border-amber-400/20 px-4 py-2 rounded-lg text-center min-w-[90px]">
-                <p class="text-[9px] text-stone-500 uppercase tracking-wider font-bold">TABLE</p>
-                <p class="text-lg font-black text-amber-400">${order.table ? order.table : 'N/A'}</p>
+              <div class="bg-amber-400/10 border border-amber-400/20 px-4 py-2.5 rounded-xl text-center min-w-[90px]">
+                <p class="text-[9px] text-stone-500 uppercase tracking-widest font-black">TABLE</p>
+                <p class="text-xl font-black text-amber-400">${order.table}</p>
               </div>
               <div>
-                <p class="text-sm font-bold text-stone-100">${order.qty}x ${order.itemName}</p>
-                <p class="text-[11px] text-stone-400 mt-0.5">Ticket ID: HFC-${order.ticket} | Value: ${order.total.toFixed(2)} ETB</p>
+                <p class="text-sm font-bold text-stone-100 font-sans">${order.qty}x ${order.itemName}</p>
+                <p class="text-[11px] text-stone-400 mt-0.5">ID: HFC-${order.ticket} | Value: ${parseFloat(order.total).toFixed(2)} ETB</p>
               </div>
             </div>
-            <div class="flex items-center gap-2 self-end sm:self-auto">
-              <span class="text-[10px] uppercase font-bold px-2 py-1 rounded ${isVerified ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${order.status}</span>
-              ${!isVerified ? `<button onclick="verifyOrder('${order.firebaseKey}')" class="bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-bold px-3 py-1.5 rounded text-[11px]">Approve Order</button>` : ''}
-              <button onclick="deleteOrder('${order.firebaseKey}')" class="bg-stone-950 hover:bg-red-950/40 border border-stone-800 text-stone-500 hover:text-red-400 p-1.5 rounded text-xs">✕</button>
+            <div class="flex items-center gap-3 justify-between md:justify-end border-t border-stone-800/50 md:border-t-0 pt-3 md:pt-0">
+              ${actionButtons}
+              ${currentRole === "ADMIN" ? `<button onclick="purgeTicket('${order.firebaseKey}')" class="text-stone-600 hover:text-red-400 p-2 border border-stone-800 bg-stone-950 rounded-xl transition-colors">✕</button>` : ''}
             </div>
           </div>
         `;
       });
     }
 
-    // --- MUTATION COMMANDS ---
-    function verifyOrder(key) { db.ref(`orders/${key}`).update({ status: "Verified & Preparing" }); }
-    function deleteOrder(key) { db.ref(`orders/${key}`).remove(); }
-    function updatePrice(id) {
-      const val = parseFloat(document.getElementById(`inputPrice-${id}`).value);
-      if (!isNaN(val) && val >= 0) { db.ref(`menu_prices/${id}`).set(val); }
+    function approveTicket(key) {
+      db.ref(`orders/${key}`).update({
+        status: "Preparing & Cooking",
+        approvedTime: Date.now()
+      });
     }
 
-    // --- PORTAL LOGIN CONTROL SHUTTERS ---
+    function purgeTicket(key) { if (confirm("Permanently wipe configuration record?")) db.ref(`orders/${key}`).remove(); }
+
+    // --- ADMIN COMPONENT SPECIFIC ACTIONS ---
+    function createNewFoodItem() {
+      const name = document.getElementById('newItemName').value.trim();
+      const price = parseFloat(document.getElementById('newItemPrice').value);
+      const cat = document.getElementById('newItemCategory').value;
+      const desc = document.getElementById('newItemDesc').value.trim();
+      let img = document.getElementById('newItemImg').value.trim();
+
+      if (!name || isNaN(price) || !desc) { alert("🚨 Operational halt: Complete all text parameter blocks."); return; }
+      if (!img) img = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
+
+      const newId = Date.now();
+      const productPayload = { id: newId, name: name, price: price, category: cat, desc: desc, img: img };
+
+      db.ref(`menu_catalog/${newId}`).set(productPayload).then(() => {
+        alert("🎉 Asset matrix compiled to live cloud menu.");
+        // Clear forms
+        document.getElementById('newItemName').value = '';
+        document.getElementById('newItemPrice').value = '';
+        document.getElementById('newItemDesc').value = '';
+        document.getElementById('newItemImg').value = '';
+      });
+    }
+
+    function deleteFoodAsset(id) { if (confirm("Remove this dish asset from customer view systems?")) db.ref(`menu_catalog/${id}`).remove(); }
+
+    function calculateBusinessAnalytics() {
+      let totalRevenue = 0;
+      let completedSales = 0;
+      let unifiedSumTime = 0;
+      let timedOrdersCount = 0;
+
+      orderQueue.forEach(order => {
+        if (order.status === "Delivered & Completed") {
+          totalRevenue += parseFloat(order.total || 0);
+          completedSales++;
+          if (order.elapsedMinutes !== undefined && order.elapsedMinutes !== null) {
+            unifiedSumTime += order.elapsedMinutes;
+            timedOrdersCount++;
+          }
+        }
+      });
+
+      document.getElementById('statRevenue').innerText = `${totalRevenue.toFixed(2)} ETB`;
+      document.getElementById('statSalesCount').innerText = completedSales;
+      
+      const averageVal = timedOrdersCount > 0 ? (unifiedSumTime / timedOrdersCount).toFixed(1) : "0.0";
+      document.getElementById('statAvgTime').innerText = `${averageVal} min`;
+    }
+
+    // --- CENTRAL PRIVILEGE AUTH SCHEMATICS ---
     function attemptLogin() {
-      if (document.getElementById('passcodeInput').value === CORRECT_PASSCODE) {
-        isAdmin = true;
-        document.getElementById('adminLoginForm').classList.add('hidden');
-        document.getElementById('adminControls').classList.remove('hidden');
-        document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-emerald-400 block animate-pulse";
-        document.getElementById('statusText').innerText = "Console Active";
-        renderMenu();
-        renderStaffQueue();
+      const pin = document.getElementById('passcodeInput').value.trim();
+      const errBox = document.getElementById('loginError');
+
+      if (pin === AUTH_ROLES.ADMIN) {
+        currentRole = "ADMIN";
+        document.getElementById('adminOnlySuite').classList.remove('hidden');
+      } else if (pin === AUTH_ROLES.CHEF) {
+        currentRole = "CHEF";
+        document.getElementById('adminOnlySuite').classList.add('hidden');
       } else {
-        document.getElementById('loginError').classList.remove('hidden');
+        errBox.classList.remove('hidden');
+        return;
       }
+
+      errBox.classList.add('hidden');
+      document.getElementById('adminLoginForm').classList.add('hidden');
+      document.getElementById('staffConsoleWrapper').classList.remove('hidden');
+      
+      document.getElementById('consoleRoleTitle').innerText = `${currentRole} Control Center`;
+      document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-emerald-400 block animate-pulse";
+      document.getElementById('statusText').innerText = `${currentRole} Dashboard Live`;
+      
+      renderMenu();
+      renderStaffQueue();
+      if (currentRole === "ADMIN") calculateBusinessAnalytics();
     }
 
-    function logoutAdmin() {
-      isAdmin = false;
+    function logoutStaff() {
+      currentRole = null;
       document.getElementById('passcodeInput').value = '';
       document.getElementById('adminLoginForm').classList.remove('hidden');
-      document.getElementById('adminControls').classList.add('hidden');
-      document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-emerald-400 block";
-      document.getElementById('statusText').innerText = "Staff Dashboard";
+      document.getElementById('staffConsoleWrapper').classList.add('hidden');
+      document.getElementById('adminOnlySuite').classList.add('hidden');
+      
+      document.getElementById('statusDot').className = "w-1.5 h-1.5 rounded-full bg-red-500 block";
+      document.getElementById('statusText').innerText = "Awaiting Authentication";
       renderMenu();
     }
 
     function scrollToAdmin() { document.getElementById('adminSection').scrollIntoView({ behavior: 'smooth' }); }
 
+    // Bootstrap local interfaces
     renderTabs();
     renderMenu();
     renderCustomerTickets();
