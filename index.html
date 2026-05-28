@@ -6,7 +6,6 @@
   <title>Halal Food Corner - Enterprise Cloud System</title>
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- FIREBASE PLATFORM CORE & REALTIME DATABASE SCRIPTS -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 </head>
@@ -14,7 +13,6 @@
 
   <div class="absolute inset-0 opacity-[0.02] pointer-events-none bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:16px_16px] z-0"></div>
 
-  <!-- HERO HEADER LAYER -->
   <header class="relative bg-stone-900/80 border-b border-stone-800 py-16 px-6 text-center z-10 overflow-hidden">
     <div class="absolute -top-10 -left-10 w-40 h-40 rounded-full border border-amber-500/10 flex items-center justify-center text-amber-500/10 text-6xl">🌙</div>
     <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full border border-amber-500/10 flex items-center justify-center text-amber-500/10 text-6xl">🕌</div>
@@ -38,7 +36,6 @@
     </button>
   </header>
 
-  <!-- LIVE RECEIPT TICKETS ROW & REVIEWS -->
   <div id="customerTicketsSection" class="max-w-5xl mx-auto px-4 mt-6 hidden">
     <div class="bg-amber-500/5 border border-amber-500/20 p-4 rounded-xl flex flex-col gap-3">
       <div class="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
@@ -48,17 +45,14 @@
     </div>
   </div>
 
-  <!-- MAIN WINDOW MAIN LAYOUT -->
   <main class="max-w-5xl mx-auto px-4 py-12 relative z-10">
     <div class="flex flex-wrap justify-center gap-2 mb-12 pb-6 border-b border-stone-900" id="tabsContainer"></div>
     <div id="menuContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
   </main>
 
-  <!-- STAFF SYSTEMS GATEWAY -->
   <footer id="adminSection" class="bg-stone-900/50 border-t border-stone-900 py-16 px-6 mt-24 relative z-10">
-    <div class="max-w-5xl mx-auto">
+    <div class="max-w-4xl mx-auto">
       
-      <!-- Password Protection Gateway Form -->
       <div id="adminLoginForm" class="bg-stone-950 border border-stone-800 p-6 rounded-2xl shadow-2xl max-w-md mx-auto text-center">
         <div class="inline-block p-2 bg-stone-900 rounded-full text-amber-500 mb-3">🔒</div>
         <h4 class="text-sm font-bold uppercase tracking-wider text-stone-300 mb-2">Internal Staff Access</h4>
@@ -70,7 +64,6 @@
         <p id="loginError" class="text-[11px] text-red-400 font-mono mt-2 hidden">✕ Access Refused: Code combination rejected</p>
       </div>
 
-      <!-- OUTSIDE CONTAINER CONTROL PANEL WRAPPER -->
       <div id="staffConsoleWrapper" class="hidden space-y-8">
         
         <div class="flex items-center justify-between border-b border-stone-800 pb-4">
@@ -81,10 +74,8 @@
           <button onclick="logoutStaff()" class="text-xs bg-stone-950 border border-stone-800 text-stone-400 px-4 py-2 rounded-xl hover:text-white transition-colors font-mono">Terminate Session</button>
         </div>
 
-        <!-- ================= ADMIN EXCLUSIVE: ANALYTICS & ADD FOOD ================= -->
         <div id="adminOnlySuite" class="grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
           
-          <!-- Financial Performance Dashboard Analytics -->
           <div class="bg-stone-950 border border-stone-800 p-6 rounded-2xl space-y-4">
             <h3 class="text-xs font-bold uppercase text-amber-400 tracking-wider font-mono">✦ Financial Analytics Dashboard</h3>
             <div class="grid grid-cols-1 gap-3">
@@ -103,7 +94,6 @@
             </div>
           </div>
 
-          <!-- Live Menu Configuration Portal (Add New Items) -->
           <div class="bg-stone-950 border border-stone-800 p-6 rounded-2xl lg:col-span-2 space-y-4">
             <h3 class="text-xs font-bold uppercase text-amber-400 tracking-wider font-mono">✦ Live Menu Configuration Deck</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -122,7 +112,6 @@
           </div>
         </div>
 
-        <!-- ================= SHARED: LIVE KITCHEN QUEUE VIEW ================= -->
         <div class="bg-stone-950 border border-stone-800 p-6 rounded-2xl shadow-xl">
           <div class="flex items-center justify-between border-b border-stone-800 pb-4 mb-4">
             <h3 class="text-xs font-bold uppercase text-emerald-400 tracking-widest font-mono">✦ Live Transmission Pipeline (Incoming Tickets)</h3>
@@ -150,7 +139,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Default structural catalog base array
     const INITIAL_CATALOG = [
       { id: 1, name: "Chicken Shawarma Wrap", category: "Wraps", price: 350.00, desc: "Slow-roasted chicken, garlic sauce, and pickles in fresh flatbread.", img: "https://images.unsplash.com/photo-1561651823-34fed022540e?auto=format&fit=crop&w=600&q=80" },
       { id: 2, name: "Premium Lamb Gyro", category: "Wraps", price: 420.00, desc: "Tender seasoned lamb wrapped with tomatoes, onions, and tzatziki.", img: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=80" },
@@ -181,11 +169,9 @@
       }
     });
 
-    // Sync menu completely from real-time dynamic node
     db.ref('menu_catalog').on('value', (snapshot) => {
       const data = snapshot.val();
       if (!data) {
-        // Hydrate database with default menu assets structure on root execution setup
         INITIAL_CATALOG.forEach(item => db.ref(`menu_catalog/${item.id}`).set(item));
         menuItems = INITIAL_CATALOG;
       } else {
@@ -259,14 +245,13 @@
       const qty = parseInt(quantityStr, 10);
       if (isNaN(qty) || qty <= 0) { alert("🚨 Quantity error format."); return; }
 
-      const tableStr = prompt(`Please input table structural coordinate number:`);
-      if (tableStr === null || tableStr.trim() === "") { alert("🚨 Execution denied: Table missing."); return; }
+      const tableStr = prompt(`Please enter your Table Number:`);
+      if (tableStr === null || tableStr.trim() === "") { alert("🚨 Execution denied: Table number required."); return; }
       const tableNum = tableStr.trim();
 
       const ticketNumber = Math.floor(1000 + Math.random() * 9000);
       
       const newOrder = {
-        id: ticketNumber, // Reference matching internal ID
         ticket: ticketNumber,
         table: tableNum,
         itemName: name,
@@ -279,6 +264,7 @@
         elapsedMinutes: null
       };
 
+      // Set directly using the unique randomized ticket identifier key string
       db.ref(`orders/TICKET-${ticketNumber}`).set(newOrder);
       myLocalTickets.push(ticketNumber);
       localStorage.setItem('my_placed_tickets', JSON.stringify(myLocalTickets));
@@ -301,8 +287,8 @@
         let subActionBlock = '';
         if (order.status === "Preparing & Cooking") {
           subActionBlock = `
-            <button onclick="confirmOrderServed('TICKET-${order.ticket}')" class="w-full mt-2 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-stone-950 font-black text-xs uppercase py-2 rounded-xl shadow-md transition-all tracking-wider animate-pulse">
-              🍽️ Food Arrived! Mark as Served
+            <button onclick="confirmOrderServed('TICKET-${order.ticket}')" class="w-full mt-2 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-stone-950 font-black text-xs uppercase py-2.5 rounded-xl shadow-md transition-all tracking-wider font-mono">
+              🍽️ Food Arrived! Tap to Complete
             </button>
           `;
         } else if (order.status === "Delivered & Completed") {
@@ -311,7 +297,7 @@
               ${hasReviewed ? `
                 <p class="text-[11px] text-emerald-400 font-medium flex items-center gap-1"><span>✨</span> Feedback processed successfully. Shukran!</p>
               ` : `
-                <p class="text-[11px] text-stone-400 mb-2 font-medium">Rate your dining culinary experience:</p>
+                <p class="text-[11px] text-stone-400 mb-2 font-medium">Rate your dining experience:</p>
                 <div class="flex items-center justify-between">
                   <div class="flex gap-1 text-lg">
                     ${[1,2,3,4,5].map(star => `<button onclick="submitStarRating(${order.ticket}, '${order.itemName}', ${star})" class="text-stone-600 hover:text-amber-400 transition-colors">★</button>`).join('')}
@@ -326,7 +312,7 @@
         }
 
         box.innerHTML += `
-          <div class="p-4 bg-stone-900/90 border rounded-xl flex flex-col justify-between gap-3 ${order.status==='Preparing & Cooking'?'border-amber-500/40 animate-pulse':order.status==='Delivered & Completed'?'border-emerald-500/20':'border-stone-800'}">
+          <div class="p-4 bg-stone-900/90 border rounded-xl flex flex-col justify-between gap-3 ${order.status==='Preparing & Cooking'?'border-amber-500/40':order.status==='Delivered & Completed'?'border-emerald-500/20':'border-stone-800'}">
             <div class="flex justify-between items-center">
               <div>
                 <span class="font-mono text-xs font-black bg-stone-950 px-2 py-1 rounded text-stone-300">HFC-${order.ticket}</span>
@@ -353,8 +339,9 @@
             status: "Delivered & Completed",
             servedTime: finishTime,
             elapsedMinutes: deltaMins
+          }).then(() => {
+             alert(`❤️ Enjoy your meal! Delivery time calculated: ${deltaMins} minutes.`);
           });
-          alert(`❤️ Alhamdulillah! Hope you enjoy your meal! Service latency registered: ${deltaMins} minutes.`);
         }
       });
     }
@@ -366,19 +353,17 @@
       renderCustomerTickets();
     }
 
-    // --- STAFF CONSOLE CONCURRENT HANDLERS ---
+    // --- STAFF CONSOLE ENGINE ---
     function renderStaffQueue() {
       const container = document.getElementById('staffOrdersQueue');
       container.innerHTML = '';
       
-      // Filter logical array depending on active interface matrix constraints
       let visibleOrders = orderQueue;
       if (currentRole === "CHEF") {
-        // Chef context only receives current working pipelines
         visibleOrders = orderQueue.filter(o => o.status !== "Delivered & Completed");
       }
 
-      document.getElementById('queueTotalDisplay').innerText = `${visibleOrders.length} Active System Invoices`;
+      document.getElementById('queueTotalDisplay').innerText = `${visibleOrders.length} Active Tickets`;
 
       if (visibleOrders.length === 0) {
         container.innerHTML = `<p class="text-xs text-stone-500 text-center py-8 font-mono">No active operations in data node queue.</p>`;
@@ -388,9 +373,10 @@
       visibleOrders.forEach(order => {
         let actionButtons = '';
         if (order.status === "Pending Kitchen Approval") {
-          actionButtons = `<button onclick="approveTicket('${order.firebaseKey}')" class="bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow-lg transition-colors">Approve Order</button>`;
+          // Fixed verification handler path parameters routing passing explicit target node key strings
+          actionButtons = `<button onclick="approveTicket('TICKET-${order.ticket}')" class="bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow-lg transition-colors">Approve Order</button>`;
         } else if (order.status === "Preparing & Cooking") {
-          actionButtons = `<span class="text-[10px] bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1.5 rounded-xl font-mono animate-pulse font-bold uppercase tracking-wider">Cooking on Station</span>`;
+          actionButtons = `<span class="text-[10px] bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1.5 rounded-xl font-mono font-bold uppercase tracking-wider">Cooking...</span>`;
         } else {
           actionButtons = `<span class="text-[10px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-xl font-mono font-bold uppercase tracking-wider">Served ✓ (${order.elapsedMinutes || 0} min)</span>`;
         }
@@ -409,23 +395,28 @@
             </div>
             <div class="flex items-center gap-3 justify-between md:justify-end border-t border-stone-800/50 md:border-t-0 pt-3 md:pt-0">
               ${actionButtons}
-              ${currentRole === "ADMIN" ? `<button onclick="purgeTicket('${order.firebaseKey}')" class="text-stone-600 hover:text-red-400 p-2 border border-stone-800 bg-stone-950 rounded-xl transition-colors">✕</button>` : ''}
+              ${currentRole === "ADMIN" ? `<button onclick="purgeTicket('TICKET-${order.ticket}')" class="text-stone-600 hover:text-red-400 p-2 border border-stone-800 bg-stone-950 rounded-xl transition-colors">✕</button>` : ''}
             </div>
           </div>
         `;
       });
     }
 
-    function approveTicket(key) {
-      db.ref(`orders/${key}`).update({
+    function approveTicket(nodeKey) {
+      db.ref(`orders/${nodeKey}`).update({
         status: "Preparing & Cooking",
         approvedTime: Date.now()
       });
     }
 
-    function purgeTicket(key) { if (confirm("Permanently wipe configuration record?")) db.ref(`orders/${key}`).remove(); }
+    // --- PURGE RECOVER RECONCILIATION DECK ---
+    function purgeTicket(nodeKey) { 
+      if (confirm("Permanently wipe configuration record?")) {
+        db.ref(`orders/${nodeKey}`).remove(); 
+      }
+    }
 
-    // --- ADMIN COMPONENT SPECIFIC ACTIONS ---
+    // --- ADMIN MODULE ANALYTICS TRACKERS ---
     function createNewFoodItem() {
       const name = document.getElementById('newItemName').value.trim();
       const price = parseFloat(document.getElementById('newItemPrice').value);
@@ -440,8 +431,7 @@
       const productPayload = { id: newId, name: name, price: price, category: cat, desc: desc, img: img };
 
       db.ref(`menu_catalog/${newId}`).set(productPayload).then(() => {
-        alert("🎉 Asset matrix compiled to live cloud menu.");
-        // Clear forms
+        alert("🎉 Product successfully added to live menu!");
         document.getElementById('newItemName').value = '';
         document.getElementById('newItemPrice').value = '';
         document.getElementById('newItemDesc').value = '';
@@ -449,7 +439,11 @@
       });
     }
 
-    function deleteFoodAsset(id) { if (confirm("Remove this dish asset from customer view systems?")) db.ref(`menu_catalog/${id}`).remove(); }
+    function deleteFoodAsset(id) { 
+      if (confirm("Remove this dish asset from customer view systems?")) {
+        db.ref(`menu_catalog/${id}`).remove(); 
+      }
+    }
 
     function calculateBusinessAnalytics() {
       let totalRevenue = 0;
@@ -475,7 +469,7 @@
       document.getElementById('statAvgTime').innerText = `${averageVal} min`;
     }
 
-    // --- CENTRAL PRIVILEGE AUTH SCHEMATICS ---
+    // --- SYSTEM SECURITY HANDSHAKE CONTROL PORTALS ---
     function attemptLogin() {
       const pin = document.getElementById('passcodeInput').value.trim();
       const errBox = document.getElementById('loginError');
@@ -491,7 +485,7 @@
         return;
       }
 
-      errBox.classList.add('hidden');
+      errBox.className = "text-[11px] text-red-400 font-mono mt-2 hidden";
       document.getElementById('adminLoginForm').classList.add('hidden');
       document.getElementById('staffConsoleWrapper').classList.remove('hidden');
       
@@ -518,7 +512,6 @@
 
     function scrollToAdmin() { document.getElementById('adminSection').scrollIntoView({ behavior: 'smooth' }); }
 
-    // Bootstrap local interfaces
     renderTabs();
     renderMenu();
     renderCustomerTickets();
